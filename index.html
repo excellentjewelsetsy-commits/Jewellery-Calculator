@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Jewellery Quotation Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --ink:#1f2430;
+ --muted:#6f7482;
+ --gold:#c59a2f;
+ --gold-deep:#9b6f1f;
+ --surface:#ffffff;
+ --surface-soft:#fff9e8;
+ --line:#e6e8ef;
+ --accent:#d86b3f;
+}
+*{box-sizing:border-box}
+body{
+ font-family:'Manrope',sans-serif;
+ background:
+  radial-gradient(1200px 500px at 10% -10%, #fff7da 0%, rgba(255,247,218,0) 70%),
+  radial-gradient(1200px 500px at 100% 0%, #ffe5d3 0%, rgba(255,229,211,0) 60%),
+  #f5f2ec;
+ color:var(--ink);
+ padding:24px;
+}
+.container{
+ max-width:1180px;
+ margin:auto;
+ background:var(--surface);
+ border-radius:28px;
+ padding:28px;
+ box-shadow:0 24px 80px rgba(22,22,40,0.12);
+ border:1px solid rgba(197,154,47,0.2);
+}
+.header{
+ display:flex;
+ flex-wrap:wrap;
+ align-items:center;
+ justify-content:space-between;
+ gap:16px;
+ padding:10px 4px 22px;
+ border-bottom:1px dashed var(--line);
+}
+.title-wrap h1{
+ font-family:'Playfair Display',serif;
+ font-size:32px;
+ margin:0;
+ color:var(--gold-deep);
+ letter-spacing:0.5px;
+}
+.title-wrap p{
+ margin:6px 0 0;
+ color:var(--muted);
+ font-size:14px;
+}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.currency-toggle{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:8px 12px;
+ border-radius:999px;
+ border:1px solid var(--line);
+ background:#fff;
+ box-shadow:0 10px 20px rgba(31,36,48,0.08);
+}
+.currency-toggle span{
+ font-size:12px;
+ font-weight:600;
+ color:var(--muted);
+ letter-spacing:0.4px;
+ text-transform:uppercase;
+}
+.switch{
+ position:relative;
+ width:64px;
+ height:32px;
+ display:inline-block;
+}
+.switch input{display:none}
+.slider{
+ position:absolute;
+ cursor:pointer;
+ top:0; left:0; right:0; bottom:0;
+ background:linear-gradient(135deg, #dfe2ea, #f6f7fb);
+ border-radius:999px;
+ transition:all 0.3s ease;
+ box-shadow:inset 0 0 0 2px rgba(31,36,48,0.08);
+}
+.slider::before{
+ content:'';
+ position:absolute;
+ height:26px;
+ width:26px;
+ left:3px;
+ top:3px;
+ background:linear-gradient(135deg, #fff, #f2f2f2);
+ border-radius:50%;
+ transition:transform 0.35s cubic-bezier(.2,.85,.25,1.2), box-shadow 0.3s ease;
+ box-shadow:0 6px 12px rgba(31,36,48,0.18);
+}
+.switch input:checked + .slider{
+ background:linear-gradient(135deg, #ffe3b1, #d48a43);
+}
+.switch input:checked + .slider::before{
+ transform:translateX(32px);
+ box-shadow:0 8px 16px rgba(216,107,63,0.3);
+}
+.toggle-label{
+ font-size:12px;
+ font-weight:700;
+ color:var(--gold-deep);
+ min-width:46px;
+ text-align:right;
+}
+button{
+ padding:10px 20px;
+ border:none;
+ border-radius:999px;
+ background:var(--gold);
+ color:#fff;
+ font-weight:600;
+ cursor:pointer;
+ transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+button.secondary{
+ background:#fff;
+ color:var(--ink);
+ border:1px solid var(--line);
+}
+button:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(197,154,47,0.2)}
+.section{
+ margin-top:22px;
+ padding:18px;
+ border-radius:20px;
+ background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+ border:1px solid var(--line);
+}
+h3{
+ margin:0 0 12px;
+ font-size:18px;
+ color:var(--gold-deep);
+ display:flex;
+ align-items:center;
+ gap:8px;
+}
+input,select{
+ width:100%;
+ padding:10px 12px;
+ border-radius:12px;
+ border:1px solid var(--line);
+ margin-top:6px;
+ font-family:'Manrope',sans-serif;
+}
+input:focus,select:focus{outline:2px solid rgba(197,154,47,0.3);border-color:var(--gold)}
+.error{border-color:#e35d5d;box-shadow:0 0 0 2px rgba(227,93,93,0.15)}
+table{width:100%;margin-top:12px;border-collapse:separate;border-spacing:0 8px}
+th,td{
+ background:#fff;
+ padding:10px;
+ text-align:center;
+ border-radius:12px;
+ box-shadow:0 5px 14px rgba(0,0,0,0.06);
+ font-size:14px;
+}
+th{color:var(--muted);font-weight:600}
+.remove{color:#c62828;cursor:pointer}
+.total{
+ margin-top:20px;
+ padding:20px;
+ background:var(--surface-soft);
+ border-radius:18px;
+ font-size:16px;
+ line-height:1.6;
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.triple{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.note{color:var(--muted);font-size:13px;margin-top:6px}
+.tag{display:inline-flex;gap:6px;align-items:center;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+@media (max-width:900px){
+ .rate-grid,.triple{grid-template-columns:1fr}
+ .grid{grid-template-columns:1fr}
+ .header{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+ <div class="title-wrap">
+  <h1>Excellent Jewels Quotation</h1>
+  <p>Build fast, polished quotes with automatic GST, handling, and USD conversion.</p>
+ </div>
+ <div class="actions">
+  <div class="currency-toggle" aria-label="Currency display toggle">
+   <span>INR</span>
+   <label class="switch">
+    <input type="checkbox" id="currencyToggle" onchange="toggleCurrency()">
+    <span class="slider"></span>
+   </label>
+   <span class="toggle-label">USD</span>
+  </div>
+  <button class="secondary" onclick="window.open('https://www.moneycontrol.com/commodity/','_blank')">Live Gold Rates</button>
+  <button class="secondary" onclick="resetAll()">Reset Form</button>
+  <button onclick="downloadQuote()">Download Quote</button>
+ </div>
+</div>
+
+<div class="section">
+ <h3>USD Conversion</h3>
+ <div class="grid">
+  <div>
+   <label>USD Rate (₹ per $)</label>
+   <input id="usdRate" type="number" min="0" step="0.01" placeholder="USD Rate (₹ per $)" value="83" oninput="handleUsdRateChange()">
+  </div>
+  <div id="usdTotal" style="margin-top:26px;font-size:18px;font-weight:600"></div>
+ </div>
+ <p class="note">Conversion is indicative and not a live FX rate.</p>
+</div>
+
+<div class="section">
+ <h3>Quote Details <span class="tag">Optional</span></h3>
+ <div class="grid">
+  <div>
+   <label>Customer Name</label>
+   <input id="customerName" placeholder="Client name">
+  </div>
+  <div>
+   <label>Quote Ref</label>
+   <input id="quoteRef" placeholder="EXJ-2026-001">
+  </div>
+ </div>
+</div>
+
+<div class="section">
+ <h3><span data-currency-label data-label-inr="Metal Base Rates (INR / gram)" data-label-usd="Metal Base Rates (USD / gram)">Metal Base Rates (INR / gram)</span></h3>
+ <div class="rate-grid">
+  <input id="gold24" type="number" min="0" step="0.01" placeholder="Gold 24K Rate (INR/gm)" data-currency-placeholder data-placeholder-inr="Gold 24K Rate (INR/gm)" data-placeholder-usd="Gold 24K Rate (USD/gm)" oninput="updateBaseRates()">
+  <input id="silverRate" type="number" min="0" step="0.01" placeholder="Silver Rate (INR/gm)" data-currency-placeholder data-placeholder-inr="Silver Rate (INR/gm)" data-placeholder-usd="Silver Rate (USD/gm)" oninput="updateBaseRates()">
+  <input id="platinumRate" type="number" min="0" step="0.01" placeholder="Platinum Rate (INR/gm)" data-currency-placeholder data-placeholder-inr="Platinum Rate (INR/gm)" data-placeholder-usd="Platinum Rate (USD/gm)" oninput="updateBaseRates()">
+ </div>
+ <div class="grid" style="margin-top:10px">
+  <div>
+   <label>GST %</label>
+   <input id="gstRate" type="number" min="0" step="0.01" value="3" placeholder="GST %" oninput="updateBaseRates()">
+  </div>
+  <div>
+   <label>Rate After GST (Gold/Silver/Platinum)</label>
+   <div class="rate-grid">
+    <input id="goldAfterGst" placeholder="Gold Rate After GST" readonly>
+    <input id="silverAfterGst" placeholder="Silver Rate After GST" readonly>
+    <input id="platinumAfterGst" placeholder="Platinum Rate After GST" readonly>
+   </div>
+  </div>
+ </div>
+ <p class="note">Rates auto-apply GST and show the purity-adjusted metal rate in the next section.</p>
+</div>
+
+<div class="section">
+ <h3>Metal Details</h3>
+ <table>
+  <tr>
+   <th>Metal</th>
+   <th>Purity</th>
+   <th>Description</th>
+   <th>Weight (gm)</th>
+   <th>Rate After GST</th>
+   <th>Total</th>
+   <th>Action</th>
+  </tr>
+  <tr>
+   <td>
+    <select id="metalType" onchange="updatePurity()">
+     <option value="gold">Gold</option>
+     <option value="silver">Silver</option>
+     <option value="platinum">Platinum</option>
+    </select>
+   </td>
+   <td><select id="purity"></select></td>
+   <td><input id="metalDesc" placeholder="Description"></td>
+   <td><input id="metalWeight" type="number" min="0" step="0.01" placeholder="Weight"></td>
+   <td id="autoRate">–</td>
+   <td>–</td>
+   <td><button onclick="addMetal()">Add</button></td>
+  </tr>
+ </table>
+
+ <table id="metalTable">
+  <tr><th>Metal</th><th>Purity</th><th>Description</th><th>Wt</th><th>Rate After GST</th><th>Total</th><th>X</th></tr>
+ </table>
+</div>
+
+<div class="section">
+ <h3>Stone / Diamond Details</h3>
+ <div class="triple">
+  <select id="stoneType">
+   <option>Diamond</option>
+   <option>Moissanite</option>
+   <option>Gemstone</option>
+  </select>
+  <select id="cert">
+   <option>Certified</option>
+   <option>Non-Certified</option>
+  </select>
+  <input id="stoneDesc" placeholder="Stone Description">
+ </div>
+ <div class="triple">
+  <input id="stoneCt" type="number" min="0" step="0.01" placeholder="Carat">
+  <input id="stoneRate" type="number" min="0" step="0.01" placeholder="Rate / Ct (INR)" data-currency-placeholder data-placeholder-inr="Rate / Ct (INR)" data-placeholder-usd="Rate / Ct (USD)">
+  <button onclick="addStone()">Add Stone</button>
+ </div>
+
+ <table id="stoneTable">
+  <tr><th>Type</th><th>Cert</th><th>Description</th><th>Ct</th><th>Rate</th><th>Total</th><th>X</th></tr>
+ </table>
+</div>
+
+<div class="section">
+ <h3>Making Charges</h3>
+ <div class="grid">
+  <div>
+   <label data-currency-label data-label-inr="Making Rate per gram (INR)" data-label-usd="Making Rate per gram (USD)">Making Rate per gram (INR)</label>
+   <input id="makingRatePerGram" type="number" min="0" step="0.01" placeholder="Rate per gram (INR)" data-currency-placeholder data-placeholder-inr="Rate per gram (INR)" data-placeholder-usd="Rate per gram (USD)" oninput="calculateMakingTotal()">
+  </div>
+  <div>
+   <label>Chargeable Weight (gm)</label>
+   <input id="makingWeight" type="number" min="0" step="0.01" placeholder="Weight (gm)" oninput="calculateMakingTotal()">
+  </div>
+ </div>
+ <input id="makingTotal" placeholder="Making Total (INR)" data-currency-placeholder data-placeholder-inr="Making Total (INR)" data-placeholder-usd="Making Total (USD)" readonly>
+ <input id="makingCharge" type="number" min="0" step="0.01" placeholder="Additional Making Charges (INR)" data-currency-placeholder data-placeholder-inr="Additional Making Charges (INR)" data-placeholder-usd="Additional Making Charges (USD)" oninput="calculateTotal()">
+</div>
+
+<div class="section">
+ <h3>Diamond Handling Charges</h3>
+ <label style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+  <input type="checkbox" id="handlingToggle" checked onchange="calculateHandling();calculateTotal()"> Enable Handling Charges
+ </label>
+ <div class="grid">
+  <input id="handlingRate" type="number" min="0" step="0.01" value="1500" placeholder="Handling Rate per Ct (INR)" data-currency-placeholder data-placeholder-inr="Handling Rate per Ct (INR)" data-placeholder-usd="Handling Rate per Ct (USD)" oninput="calculateHandling()">
+  <input id="handlingTotal" placeholder="Handling Total (INR)" data-currency-placeholder data-placeholder-inr="Handling Total (INR)" data-placeholder-usd="Handling Total (USD)" readonly>
+ </div>
+ <p class="note">Handling charges auto-calculate from total stone carat when enabled.</p>
+</div>
+
+<div class="section">
+ <h3>Totals</h3>
+ <div class="total" id="finalResult"></div>
+</div>
+</div>
+
+<script>
+let goldFactor={9:0.40,10:0.42,14:0.595,18:0.76,22:0.92};
+let baseRates={gold:0,silver:0,platinum:0,gst:3};
+const inrFormat = new Intl.NumberFormat('en-IN', {style:'currency',currency:'INR',maximumFractionDigits:2});
+const formatInr = (value) => inrFormat.format(value || 0);
+const formatPlain = (value) => (value || 0).toFixed(2);
+const formatInrText = (value) => `INR ${formatPlain(value)}`;
+let showUsd = false;
+const currencyInputs = [];
+const getUsdRate = () => +usdRate.value || 0;
+const formatUsd = (value) => {
+ let rate = getUsdRate();
+ if(rate <= 0){ return formatInr(value); }
+ return `$${(value / rate).toFixed(2)}`;
+};
+const formatCurrency = (value) => showUsd ? formatUsd(value) : formatInr(value);
+const formatCurrencyText = (value) => {
+ if(!showUsd){ return formatInrText(value); }
+ let rate = getUsdRate();
+ if(rate <= 0){ return formatInrText(value); }
+ return `USD ${formatPlain(value / rate)}`;
+};
+const setDisplayValue = (el, inrValue) => {
+ if(!el){ return; }
+ el.dataset.inr = inrValue;
+ el.value = formatCurrency(inrValue);
+};
+const setCurrencyInputDisplay = (el, inrValue) => {
+ if(!el){ return; }
+ el.dataset.inr = inrValue;
+ let rate = getUsdRate();
+ let display = inrValue;
+ if(showUsd && rate > 0){ display = inrValue / rate; }
+ el.value = display ? display.toFixed(2) : (el.value === '' ? '' : '0.00');
+};
+const getCurrencyInputInr = (el) => {
+ if(!el){ return 0; }
+ let raw = parseFloat(el.value);
+ if(isNaN(raw)){ raw = 0; }
+ let rate = getUsdRate();
+ let inr = raw;
+ if(showUsd && rate > 0){ inr = raw * rate; }
+ el.dataset.inr = inr;
+ return inr;
+};
+const getInrValue = (el) => {
+ if(!el){ return 0; }
+ if(el.dataset && el.dataset.inr !== undefined){
+  let val = parseFloat(el.dataset.inr);
+  return isNaN(val) ? 0 : val;
+ }
+ return +el.value || 0;
+};
+const clearError = (el) => el && el.classList.remove('error');
+
+function markError(fields){
+ fields.forEach(field=>{
+  if(field){ field.classList.add('error'); }
+ });
+}
+
+function updatePurity(){
+ purity.innerHTML='';
+ if(metalType.value==='gold'){
+  purity.innerHTML='<option>9</option><option>10</option><option>14</option><option>18</option><option>22</option>';
+ }
+ if(metalType.value==='silver') purity.innerHTML='<option>925</option>';
+ if(metalType.value==='platinum') purity.innerHTML='<option>950</option>';
+ updateAutoRate();
+}
+updatePurity();
+
+function updateBaseRates(){
+ baseRates.gold=getCurrencyInputInr(gold24);
+ baseRates.silver=getCurrencyInputInr(silverRate);
+ baseRates.platinum=getCurrencyInputInr(platinumRate);
+ baseRates.gst=+gstRate.value||0;
+
+ setDisplayValue(goldAfterGst, baseRates.gold + baseRates.gold*baseRates.gst/100);
+ setDisplayValue(silverAfterGst, baseRates.silver + baseRates.silver*baseRates.gst/100);
+ setDisplayValue(platinumAfterGst, baseRates.platinum + baseRates.platinum*baseRates.gst/100);
+
+ updateAutoRate();
+}
+
+function updateAutoRate(){
+ let rate=0;
+ if(metalType.value==='gold') rate=baseRates.gold*goldFactor[purity.value];
+ if(metalType.value==='silver') rate=baseRates.silver;
+ if(metalType.value==='platinum') rate=baseRates.platinum;
+ rate=rate + rate*(baseRates.gst/100);
+ autoRate.dataset.inr = rate;
+ autoRate.innerText=rate?formatCurrency(rate):'–';
+}
+
+purity.onchange=updateAutoRate;
+gold24.oninput=silverRate.oninput=platinumRate.oninput=gstRate.oninput=updateBaseRates;
+
+function addMetal(){
+ clearError(metalWeight);
+ clearError(gold24);
+ clearError(silverRate);
+ clearError(platinumRate);
+ let w=+metalWeight.value;
+ let rate=parseFloat(autoRate.dataset.inr)||0;
+ if(!w || !rate){
+  markError([metalWeight]);
+  if(metalType.value==='gold') markError([gold24]);
+  if(metalType.value==='silver') markError([silverRate]);
+  if(metalType.value==='platinum') markError([platinumRate]);
+  return;
+ }
+ let total=w*rate;
+ metalTable.innerHTML+=`<tr>
+ <td>${metalType.value}</td>
+ <td>${purity.value}</td>
+ <td>${metalDesc.value}</td>
+ <td>${w}</td>
+ <td class='price-rate' data-rate='${rate}'>${formatCurrency(rate)}</td>
+ <td class='mt price-total' data-value='${total}'>${formatCurrency(total)}</td>
+ <td class='remove' onclick="this.parentElement.remove();calculateTotal()">✖</td>
+ </tr>`;
+ metalDesc.value='';
+ metalWeight.value='';
+ calculateTotal();
+}
+
+function addStone(){
+ clearError(stoneCt);
+ clearError(stoneRate);
+ let ct=+stoneCt.value, rate=getCurrencyInputInr(stoneRate);
+ if(!ct||!rate){
+  markError([stoneCt, stoneRate]);
+  return;
+ }
+ let total=ct*rate;
+ stoneTable.innerHTML+=`<tr>
+ <td>${stoneType.value}</td>
+ <td>${cert.value}</td>
+ <td>${stoneDesc.value}</td>
+ <td class='stoneCt'>${ct}</td>
+ <td class='price-rate' data-rate='${rate}'>${formatCurrency(rate)}</td>
+ <td class='st price-total' data-value='${total}'>${formatCurrency(total)}</td>
+ <td class='remove' onclick="this.parentElement.remove();calculateHandling();calculateTotal()">✖</td>
+ </tr>`;
+ stoneDesc.value='';
+ stoneCt.value='';
+ stoneRate.value='';
+ calculateHandling();
+ calculateTotal();
+}
+
+function calculateMakingTotal(){
+ let rate=getCurrencyInputInr(makingRatePerGram);
+ let wt=+makingWeight.value||0;
+ setDisplayValue(makingTotal, rate*wt);
+ calculateTotal();
+}
+
+function calculateHandling(){
+ let toggle = document.getElementById('handlingToggle');
+ if(!toggle || !toggle.checked){
+  setDisplayValue(handlingTotal, 0);
+  return;
+ }
+ let rate = getCurrencyInputInr(handlingRate);
+ let totalCarat = 0;
+ document.querySelectorAll('.stoneCt').forEach(ct=>{
+  totalCarat += +ct.innerText || 0;
+ });
+ setDisplayValue(handlingTotal, totalCarat * rate);
+}
+
+function calculateTotal(){
+ let metal=0, stone=0;
+ document.querySelectorAll('.mt').forEach(e=>metal+=+(e.dataset.value || 0));
+ document.querySelectorAll('.st').forEach(e=>stone+=+(e.dataset.value || 0));
+ let making1=getInrValue(makingTotal);
+ let making2=getCurrencyInputInr(makingCharge);
+ let handling=getInrValue(handlingTotal);
+ let total=metal+stone+making1+making2+handling;
+ let handlingToggle = document.getElementById('handlingToggle');
+ let handlingLabel = handlingToggle && handlingToggle.checked ? 'ON' : 'OFF';
+ finalResult.innerHTML=`Metal: ${formatCurrency(metal)}<br>
+Stone: ${formatCurrency(stone)}<br>
+Making: ${formatCurrency(making1+making2)}<br>
+Handling (${handlingLabel}): ${formatCurrency(handling)}<br>
+<b style='font-size:22px;color:#b8962e'>Grand Total: ${formatCurrency(total)}</b>`;
+
+ let usdRateVal = +usdRate.value || 0;
+ if(usdRateVal>0){
+  if(showUsd){
+   usdTotal.innerHTML = `≈ ${formatInr(total)}`;
+  } else {
+   let usd = total / usdRateVal;
+   usdTotal.innerHTML = `≈ $${usd.toFixed(2)} USD`;
+  }
+ } else {
+  usdTotal.innerHTML = '';
+ }
+ refreshCurrencyDisplays();
+}
+
+function refreshCurrencyInputs(){
+ currencyInputs.forEach(el=>{
+  if(!el){ return; }
+  let inr = parseFloat(el.dataset.inr);
+  if(isNaN(inr)){
+   let current = parseFloat(el.value);
+   inr = isNaN(current) ? 0 : current;
+  }
+  setCurrencyInputDisplay(el, inr);
+ });
+}
+
+function updateCurrencyLabels(){
+ const labels = document.querySelectorAll('[data-currency-label]');
+ labels.forEach(label=>{
+  let text = showUsd ? label.dataset.labelUsd : label.dataset.labelInr;
+  if(text){ label.textContent = text; }
+ });
+ const placeholders = document.querySelectorAll('[data-currency-placeholder]');
+ placeholders.forEach(input=>{
+  let text = showUsd ? input.dataset.placeholderUsd : input.dataset.placeholderInr;
+  if(text){ input.placeholder = text; }
+ });
+}
+
+function handleUsdRateChange(){
+ refreshCurrencyInputs();
+ refreshCurrencyDisplays();
+ calculateTotal();
+ updateCurrencyLabels();
+}
+
+function resetAll(){
+ document.querySelectorAll('input').forEach(input=>{
+  if(input.id === 'gstRate'){ input.value = 3; return; }
+  if(input.id === 'usdRate'){ input.value = 83; return; }
+  if(input.id === 'handlingRate'){ input.value = 1500; return; }
+  if(input.id === 'handlingToggle'){ return; }
+  input.value = '';
+ });
+ document.getElementById('handlingToggle').checked = true;
+ if(currencyToggle){
+  currencyToggle.checked = false;
+ }
+ showUsd = false;
+ currencyInputs.forEach(input=>{
+  if(input){ delete input.dataset.inr; }
+ });
+ if(makingTotal){ makingTotal.dataset.inr = 0; }
+ if(handlingTotal){ handlingTotal.dataset.inr = 0; }
+ document.getElementById('metalTable').innerHTML = '<tr><th>Metal</th><th>Purity</th><th>Description</th><th>Wt</th><th>Rate After GST</th><th>Total</th><th>X</th></tr>';
+ document.getElementById('stoneTable').innerHTML = '<tr><th>Type</th><th>Cert</th><th>Description</th><th>Ct</th><th>Rate</th><th>Total</th><th>X</th></tr>';
+ updateBaseRates();
+ calculateHandling();
+ calculateTotal();
+ updateCurrencyLabels();
+ refreshCurrencyInputs();
+}
+
+function downloadQuote(){
+ const { jsPDF } = window.jspdf;
+ const doc = new jsPDF();
+ const yStart = 15;
+ let y = yStart;
+ doc.setFont('helvetica','bold');
+ doc.setFontSize(16);
+ doc.text('Excellent Jewels - Quote Summary', 14, y);
+ y += 8;
+ doc.setFont('helvetica','normal');
+ doc.setFontSize(10);
+ const customer = customerName.value ? `Customer: ${customerName.value}` : 'Customer: -';
+ const quote = quoteRef.value ? `Quote Ref: ${quoteRef.value}` : 'Quote Ref: -';
+ doc.text(customer, 14, y); y += 5;
+ doc.text(quote, 14, y); y += 8;
+ doc.text(`Metal Total: ${formatCurrencyText(getTableTotal('.mt'))}`, 14, y); y += 5;
+ doc.text(`Stone Total: ${formatCurrencyText(getTableTotal('.st'))}`, 14, y); y += 5;
+ const making = getInrValue(makingTotal) + (+makingCharge.value||0);
+ doc.text(`Making Total: ${formatCurrencyText(making)}`, 14, y); y += 5;
+ doc.text(`Handling Total: ${formatCurrencyText(getInrValue(handlingTotal))}`, 14, y); y += 7;
+ doc.setFont('helvetica','bold');
+ doc.text(`Grand Total: ${formatCurrencyText(calculateGrandTotal())}`, 14, y);
+ doc.save('jewellery-quote.pdf');
+}
+
+function getTableTotal(selector){
+ let total = 0;
+ document.querySelectorAll(selector).forEach(e=>total+=+(e.dataset.value || 0));
+ return total;
+}
+
+function calculateGrandTotal(){
+ let metal = getTableTotal('.mt');
+ let stone = getTableTotal('.st');
+ let making1 = getInrValue(makingTotal);
+ let making2 = +makingCharge.value||0;
+ let handling = getInrValue(handlingTotal);
+ return metal+stone+making1+making2+handling;
+}
+
+function refreshCurrencyDisplays(){
+ if(autoRate){
+  let autoRateInr = parseFloat(autoRate.dataset.inr);
+  autoRate.innerText = autoRateInr ? formatCurrency(autoRateInr) : '–';
+ }
+ [goldAfterGst, silverAfterGst, platinumAfterGst, makingTotal, handlingTotal].forEach(el=>{
+  if(!el){ return; }
+  let inr = parseFloat(el.dataset.inr);
+  if(!isNaN(inr)){
+   el.value = formatCurrency(inr);
+  }
+ });
+ document.querySelectorAll('.price-rate').forEach(cell=>{
+  let inr = +cell.dataset.rate || 0;
+  cell.innerText = formatCurrency(inr);
+ });
+ document.querySelectorAll('.price-total').forEach(cell=>{
+  let inr = +cell.dataset.value || 0;
+  cell.innerText = formatCurrency(inr);
+ });
+}
+
+function toggleCurrency(){
+ showUsd = !!currencyToggle.checked;
+ refreshCurrencyInputs();
+ refreshCurrencyDisplays();
+ updateCurrencyLabels();
+ calculateTotal();
+}
+
+currencyInputs.push(gold24, silverRate, platinumRate, stoneRate, makingRatePerGram, makingCharge, handlingRate);
+updateCurrencyLabels();
+calculateTotal();
+</script>
+</body>
+</html>
