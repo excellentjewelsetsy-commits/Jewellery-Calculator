@@ -27,6 +27,63 @@ body{
  color:var(--ink);
  padding:24px;
 }
+.app{
+ max-width:1400px;
+ margin:auto;
+ display:grid;
+ grid-template-columns:240px 1fr;
+ gap:22px;
+ align-items:start;
+}
+.sidebar{
+ position:sticky;
+ top:24px;
+}
+.sidebar-card{
+ background:#fff;
+ border:1px solid rgba(197,154,47,0.25);
+ border-radius:20px;
+ padding:16px;
+ box-shadow:0 18px 40px rgba(31,36,48,0.12);
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+}
+.sidebar-card.subtle{
+ border:1px solid rgba(230,232,239,0.9);
+ box-shadow:0 12px 28px rgba(31,36,48,0.08);
+}
+.sidebar-card h2{
+ margin:0;
+ font-family:'Playfair Display',serif;
+ font-size:18px;
+ color:var(--gold-deep);
+ letter-spacing:0.4px;
+}
+.sidebar-item{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ width:100%;
+ border-radius:14px;
+ border:1px solid var(--line);
+ background:#fff;
+ color:var(--ink);
+ padding:12px 14px;
+ font-weight:600;
+ text-align:left;
+ box-shadow:0 10px 18px rgba(31,36,48,0.08);
+ text-decoration:none;
+}
+.sidebar-item:hover{
+ border-color:rgba(197,154,47,0.6);
+ box-shadow:0 14px 22px rgba(197,154,47,0.18);
+}
+.sidebar-item.active{
+ border-color:rgba(197,154,47,0.7);
+ background:rgba(255,249,232,0.9);
+ box-shadow:0 14px 22px rgba(197,154,47,0.2);
+}
 .container{
  max-width:1180px;
  margin:auto;
@@ -177,27 +234,228 @@ th{color:var(--muted);font-weight:600}
  font-size:16px;
  line-height:1.6;
 }
+.total-row{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ padding:4px 0;
+ font-variant-numeric:tabular-nums;
+}
+.total-row span:last-child{font-weight:600}
+.total-row.grand{
+ margin-top:8px;
+ padding-top:10px;
+ border-top:1px dashed var(--line);
+ font-size:20px;
+ color:var(--gold-deep);
+}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sidebar-card .grid{grid-template-columns:1fr}
 .rate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .triple{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .note{color:var(--muted);font-size:13px;margin-top:6px}
 .tag{display:inline-flex;gap:6px;align-items:center;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+.quote-template{
+ margin-top:24px;
+ background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,249,232,0.65));
+ border:1px solid rgba(197,154,47,0.35);
+ border-radius:22px;
+ padding:22px;
+}
+.quote-grid{
+ display:grid;
+ grid-template-columns:1.2fr 1fr;
+ gap:20px;
+}
+.quote-block{
+ background:#fff;
+ border:1px solid var(--line);
+ border-radius:16px;
+ padding:16px;
+ box-shadow:0 12px 24px rgba(31,36,48,0.08);
+}
+.quote-block h4{
+ margin:0 0 10px;
+ font-size:16px;
+ color:var(--gold-deep);
+}
+.quote-block p{
+ margin:6px 0;
+ color:var(--ink);
+ font-size:13px;
+ line-height:1.5;
+}
+.quote-block .muted{
+ color:var(--muted);
+}
+.quote-list{
+ margin:0;
+ padding-left:18px;
+ color:var(--ink);
+ font-size:13px;
+ line-height:1.6;
+}
+.quote-list li{margin-bottom:6px}
+.saved-actions{
+ display:flex;
+ gap:10px;
+ flex-wrap:wrap;
+ margin-bottom:12px;
+}
+.saved-list{
+ display:grid;
+ gap:12px;
+}
+.saved-card{
+ background:#fff;
+ border:1px solid var(--line);
+ border-radius:14px;
+ padding:12px 14px;
+ box-shadow:0 10px 18px rgba(31,36,48,0.06);
+ display:flex;
+ flex-wrap:wrap;
+ gap:6px 12px;
+ align-items:center;
+ justify-content:space-between;
+}
+.saved-card small{
+ color:var(--muted);
+ font-size:12px;
+}
+.saved-title{
+ font-weight:700;
+ color:var(--ink);
+}
+.saved-meta{
+ color:var(--muted);
+ font-size:12px;
+}
+.saved-actions-inline{
+ display:flex;
+ gap:8px;
+}
+.saved-actions-inline button{
+ padding:6px 12px;
+ font-size:12px;
+ border-radius:999px;
+}
+.total-actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:10px;
+ margin-top:12px;
+}
+.tour-overlay{
+ position:fixed;
+ inset:0;
+ z-index:1000;
+ display:none;
+}
+.tour-overlay.active{
+ display:block;
+}
+.tour-backdrop{
+ position:absolute;
+ inset:0;
+ background:rgba(16,18,26,0.58);
+ backdrop-filter:blur(2px);
+}
+.tour-intro,
+.tour-popover{
+ position:absolute;
+ max-width:360px;
+ background:#fff;
+ border-radius:18px;
+ border:1px solid rgba(197,154,47,0.35);
+ box-shadow:0 20px 60px rgba(18,18,32,0.25);
+ padding:18px;
+ z-index:1003;
+}
+.tour-intro h3{
+ margin:0 0 8px;
+ font-size:20px;
+ color:var(--gold-deep);
+}
+.tour-intro p{
+ margin:0 0 16px;
+ color:var(--muted);
+ font-size:14px;
+ line-height:1.6;
+}
+.tour-step-count{
+ font-size:12px;
+ text-transform:uppercase;
+ letter-spacing:0.4px;
+ color:var(--muted);
+ margin-bottom:6px;
+}
+.tour-popover h4{
+ margin:0 0 6px;
+ font-size:16px;
+ color:var(--gold-deep);
+}
+.tour-popover p{
+ margin:0 0 14px;
+ font-size:13px;
+ color:var(--ink);
+ line-height:1.5;
+}
+.tour-actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:10px;
+ justify-content:flex-end;
+}
+.tour-highlight{
+ position:relative;
+ z-index:1002;
+ box-shadow:0 0 0 4px rgba(255,249,232,0.9), 0 12px 32px rgba(0,0,0,0.25);
+ border-radius:16px;
+}
 @media (max-width:900px){
  .rate-grid,.triple{grid-template-columns:1fr}
  .grid{grid-template-columns:1fr}
  .header{flex-direction:column;align-items:flex-start}
+ .quote-grid{grid-template-columns:1fr}
+}
+@media (max-width:1100px){
+ .app{grid-template-columns:1fr}
+ .sidebar{position:static}
+ .container{max-width:100%}
 }
 </style>
 </head>
 <body>
-<div class="container">
+<img id="pdfLogo" src="assets/logo.png" alt="Excellent Jewels logo" style="display:none">
+<div class="app">
+ <aside class="sidebar">
+  <div class="sidebar-card">
+   <h2>Quote Tools</h2>
+   <button class="sidebar-item active" onclick="startNewQuote()">➕ New Quote</button>
+   <a class="sidebar-item" href="saved-quotes.html">📄 Saved Quotes</a>
+   <a class="sidebar-item" href="search-quotes.html">🔍 Search Quote</a>
+  </div>
+  <div class="sidebar-card subtle">
+   <h2>USD Conversion</h2>
+   <div class="grid">
+    <div>
+     <label>USD Rate (₹ per $)</label>
+     <input id="usdRate" type="number" min="0" step="0.01" placeholder="USD Rate (₹ per $)" value="83" oninput="handleUsdRateChange()">
+    </div>
+    <div id="usdTotal" style="margin-top:26px;font-size:18px;font-weight:600"></div>
+   </div>
+   <p class="note">Conversion is indicative and not a live FX rate.</p>
+  </div>
+ </aside>
+ <main class="container">
 <div class="header">
  <div class="title-wrap">
   <h1>Excellent Jewels Quotation</h1>
   <p>Build fast, polished quotes with automatic GST, handling, and USD conversion.</p>
  </div>
  <div class="actions">
-  <div class="currency-toggle" aria-label="Currency display toggle">
+  <div class="currency-toggle" id="currencyToggleWrap" aria-label="Currency display toggle">
    <span>INR</span>
    <label class="switch">
     <input type="checkbox" id="currencyToggle" onchange="toggleCurrency()">
@@ -207,23 +465,10 @@ th{color:var(--muted);font-weight:600}
   </div>
   <button class="secondary" onclick="window.open('https://www.moneycontrol.com/commodity/','_blank')">Live Gold Rates</button>
   <button class="secondary" onclick="resetAll()">Reset Form</button>
-  <button onclick="downloadQuote()">Download Quote</button>
  </div>
 </div>
 
-<div class="section">
- <h3>USD Conversion</h3>
- <div class="grid">
-  <div>
-   <label>USD Rate (₹ per $)</label>
-   <input id="usdRate" type="number" min="0" step="0.01" placeholder="USD Rate (₹ per $)" value="83" oninput="handleUsdRateChange()">
-  </div>
-  <div id="usdTotal" style="margin-top:26px;font-size:18px;font-weight:600"></div>
- </div>
- <p class="note">Conversion is indicative and not a live FX rate.</p>
-</div>
-
-<div class="section">
+<div class="section" id="quoteDetailsSection">
  <h3>Quote Details <span class="tag">Optional</span></h3>
  <div class="grid">
   <div>
@@ -237,7 +482,7 @@ th{color:var(--muted);font-weight:600}
  </div>
 </div>
 
-<div class="section">
+<div class="section" id="baseRatesSection">
  <h3><span data-currency-label data-label-inr="Metal Base Rates (INR / gram)" data-label-usd="Metal Base Rates (USD / gram)">Metal Base Rates (INR / gram)</span></h3>
  <div class="rate-grid">
   <input id="gold24" type="number" min="0" step="0.01" placeholder="Gold 24K Rate (INR/gm)" data-currency-placeholder data-placeholder-inr="Gold 24K Rate (INR/gm)" data-placeholder-usd="Gold 24K Rate (USD/gm)" oninput="updateBaseRates()">
@@ -261,7 +506,7 @@ th{color:var(--muted);font-weight:600}
  <p class="note">Rates auto-apply GST and show the purity-adjusted metal rate in the next section.</p>
 </div>
 
-<div class="section">
+<div class="section" id="metalSection">
  <h3>Metal Details</h3>
  <table>
   <tr>
@@ -295,7 +540,7 @@ th{color:var(--muted);font-weight:600}
  </table>
 </div>
 
-<div class="section">
+<div class="section" id="stoneSection">
  <h3>Stone / Diamond Details</h3>
  <div class="triple">
   <select id="stoneType">
@@ -320,7 +565,7 @@ th{color:var(--muted);font-weight:600}
  </table>
 </div>
 
-<div class="section">
+<div class="section" id="makingSection">
  <h3>Making Charges</h3>
  <div class="grid">
   <div>
@@ -336,7 +581,7 @@ th{color:var(--muted);font-weight:600}
  <input id="makingCharge" type="number" min="0" step="0.01" placeholder="Additional Making Charges (INR)" data-currency-placeholder data-placeholder-inr="Additional Making Charges (INR)" data-placeholder-usd="Additional Making Charges (USD)" oninput="calculateTotal()">
 </div>
 
-<div class="section">
+<div class="section" id="handlingSection">
  <h3>Diamond Handling Charges</h3>
  <label style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
   <input type="checkbox" id="handlingToggle" checked onchange="calculateHandling();calculateTotal()"> Enable Handling Charges
@@ -348,10 +593,80 @@ th{color:var(--muted);font-weight:600}
  <p class="note">Handling charges auto-calculate from total stone carat when enabled.</p>
 </div>
 
-<div class="section">
+<div class="section" id="shippingSection">
+ <h3>Shipping Charges <span class="tag">Manual Field</span></h3>
+ <div class="grid">
+  <input id="shippingCharge" type="number" min="0" step="0.01" placeholder="Shipping Charges (INR)" data-currency-placeholder data-placeholder-inr="Shipping Charges (INR)" data-placeholder-usd="Shipping Charges (USD)" oninput="calculateTotal()">
+ </div>
+ <p class="note">Shipping charges will be added to the grand total.</p>
+</div>
+
+<div class="section" id="totalsSection">
  <h3>Totals</h3>
  <div class="total" id="finalResult"></div>
+ <div class="total-actions">
+  <button class="secondary" id="saveQuoteButton" onclick="saveCurrentQuote()">Save Quote</button>
+  <button onclick="downloadQuote()">Download Quote</button>
+ </div>
 </div>
+
+<div class="quote-template">
+ <h3>Quotation Notes & Payment Details</h3>
+ <div class="quote-grid">
+  <div class="quote-block">
+   <h4>Payment details</h4>
+   <p><strong>Bank Details:</strong></p>
+   <p>Account Holder Name: EXCELLENT CORPORATION HK LIMITED</p>
+   <p>Bank Name: HONGKONG AND SHANGHAI BANKING CORPORATION LIMITED</p>
+   <p>Swift Code: HSBCHKHHXXX</p>
+   <p>HSBC Account Number: 841-686124-838</p>
+   <p>Branch Code: 841</p>
+   <p>Bank Code: 004</p>
+   <p>Bank Address: 1 QUEEN'S ROAD CENTRAL, CENTRAL AND WESTERN DISTRICT</p>
+   <p class="muted">Note: Due to rapid metal price fluctuations, this quotation is valid for 24 hours only. Any increase in metal rates beyond this period will be charged additionally.</p>
+  </div>
+  <div class="quote-block">
+   <h4>Terms & Conditions</h4>
+   <ul class="quote-list">
+    <li>Prices: Quoted in USD, Ex-Works Surat, India.</li>
+    <li>Payment Terms: Advance enrollment (payment) required.</li>
+    <li>Delivery Time: Approx 4–7 business days for diamond production and 1–2 weeks for complete jewelry manufacturing. Timelines may vary depending on customization, design, and delivery location.</li>
+    <li>Availability: Subject to stock at the time of order confirmation.</li>
+    <li>Customization: Length, diamond quality, and design can be customized on request.</li>
+    <li>Shipping: Shipment from Hong Kong; shipping & insurance charges additional, usually USD 75-125.</li>
+    <li>Pricing Errors: Any pricing or typographical error may be revised or order cancelled.</li>
+    <li>Price Changes: Prices are subject to change without notice due to market fluctuations.</li>
+    <li>Validity: This quotation and order pricing are valid for 24 hours only from the date of issue. Due to rapid fluctuations in precious metal and diamond prices, any price difference after the validity period will be chargeable to the buyer.</li>
+    <li>Cancellation & Refund: Orders can be cancelled before production or dispatch. Once shipped or processed, cancellations are not accepted. Returns or refunds are only applicable for incorrect items or damage during transit, after verification. Customized or made-to-order jewellery is non-returnable. Approved refunds will be processed to the original payment method within a reasonable timeframe.</li>
+    <li>Return Policy: Returns accepted within 15 days for manufacturing defects or mismatch; item must be unused, unaltered, and in original packaging; customized/engraved jewelry is non-returnable; buyer informs within 2 days; return shipping, insurance, import duties non-refundable; refunds processed in 2–6 working days after inspection. Engraved and customized items are non-returnable and non-refundable.</li>
+    <li>Shipping Policy: Domestic delivery 2-3 business days; international delivery 4–7 business days; buyer responsible for import duties, taxes, and customs; shipping charges non-refundable; buyer provides documents if customs hold good.</li>
+   </ul>
+  </div>
+ </div>
+</div>
+</main>
+</div>
+
+<div class="tour-overlay" id="tourOverlay" aria-hidden="true">
+ <div class="tour-backdrop"></div>
+ <div class="tour-intro" id="tourIntro" role="dialog" aria-modal="true" aria-labelledby="tourIntroTitle">
+  <h3 id="tourIntroTitle">Welcome to the quotation calculator</h3>
+  <p>Take a quick tour to see where to enter rates, add metal and stones, and review totals. The tour can be skipped anytime.</p>
+  <div class="tour-actions">
+   <button class="secondary" id="tourSkip">Skip</button>
+   <button id="tourStart">Take tour</button>
+  </div>
+ </div>
+ <div class="tour-popover" id="tourPopover" role="dialog" aria-live="polite" hidden>
+  <div class="tour-step-count" id="tourStepCount"></div>
+  <h4 id="tourTitle"></h4>
+  <p id="tourText"></p>
+  <div class="tour-actions">
+   <button class="secondary" id="tourBack">Back</button>
+   <button class="secondary" id="tourClose">Skip</button>
+   <button id="tourNext">Next</button>
+  </div>
+ </div>
 </div>
 
 <script>
@@ -534,14 +849,17 @@ function calculateTotal(){
  let making1=getInrValue(makingTotal);
  let making2=getCurrencyInputInr(makingCharge);
  let handling=getInrValue(handlingTotal);
- let total=metal+stone+making1+making2+handling;
+ let shipping=getCurrencyInputInr(shippingCharge);
+ let total=metal+stone+making1+making2+handling+shipping;
  let handlingToggle = document.getElementById('handlingToggle');
  let handlingLabel = handlingToggle && handlingToggle.checked ? 'ON' : 'OFF';
- finalResult.innerHTML=`Metal: ${formatCurrency(metal)}<br>
-Stone: ${formatCurrency(stone)}<br>
-Making: ${formatCurrency(making1+making2)}<br>
-Handling (${handlingLabel}): ${formatCurrency(handling)}<br>
-<b style='font-size:22px;color:#b8962e'>Grand Total: ${formatCurrency(total)}</b>`;
+ finalResult.innerHTML=`
+  <div class="total-row"><span>Metal</span><span>${formatCurrency(metal)}</span></div>
+  <div class="total-row"><span>Stone</span><span>${formatCurrency(stone)}</span></div>
+  <div class="total-row"><span>Making</span><span>${formatCurrency(making1+making2)}</span></div>
+  <div class="total-row"><span>Handling (${handlingLabel})</span><span>${formatCurrency(handling)}</span></div>
+  <div class="total-row"><span>Shipping</span><span>${formatCurrency(shipping)}</span></div>
+  <div class="total-row grand"><span>Grand Total</span><span>${formatCurrency(total)}</span></div>`;
 
  let usdRateVal = +usdRate.value || 0;
  if(usdRateVal>0){
@@ -589,6 +907,65 @@ function handleUsdRateChange(){
  updateCurrencyLabels();
 }
 
+function startNewQuote(){
+ resetAll();
+ window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function getSavedQuotes(){
+ try{
+  return JSON.parse(localStorage.getItem('savedQuotes') || '[]');
+ }catch(err){
+  return [];
+ }
+}
+
+function setSavedQuotes(quotes){
+ localStorage.setItem('savedQuotes', JSON.stringify(quotes));
+}
+
+function getCurrentGrandTotalInr(){
+ let metal=0, stone=0;
+ document.querySelectorAll('.mt').forEach(e=>metal+=+(e.dataset.value || 0));
+ document.querySelectorAll('.st').forEach(e=>stone+=+(e.dataset.value || 0));
+ let making1=getInrValue(makingTotal);
+ let making2=getCurrencyInputInr(makingCharge);
+ let handling=getInrValue(handlingTotal);
+ let shipping=getCurrencyInputInr(shippingCharge);
+ return metal+stone+making1+making2+handling+shipping;
+}
+
+function saveCurrentQuote(){
+ const params = new URLSearchParams(window.location.search);
+ const editId = params.get('quoteId') || params.get('edit');
+ const quotes = getSavedQuotes();
+ const totalInr = getCurrentGrandTotalInr();
+ const existing = editId ? quotes.find(item => item.id === editId) : null;
+ const entry = buildQuotePayload({
+  id: existing?.id || Date.now().toString(36),
+  createdAt: existing?.createdAt || new Date().toISOString(),
+  totalInr
+ });
+ const updated = existing
+  ? quotes.map(item => item.id === entry.id ? entry : item)
+  : [entry, ...quotes];
+ setSavedQuotes(updated.slice(0, 50));
+ setSaveButtonState(existing ? 'Updated!' : 'Saved!');
+}
+
+function setSaveButtonState(text){
+ const button = document.getElementById('saveQuoteButton');
+ if(!button){ return; }
+ const original = button.dataset.originalText || button.textContent;
+ button.dataset.originalText = original;
+ button.textContent = text;
+ button.disabled = true;
+ setTimeout(()=>{
+  button.textContent = original;
+  button.disabled = false;
+ }, 1600);
+}
+
 function resetAll(){
  document.querySelectorAll('input').forEach(input=>{
   if(input.id === 'gstRate'){ input.value = 3; return; }
@@ -607,6 +984,7 @@ function resetAll(){
  });
  if(makingTotal){ makingTotal.dataset.inr = 0; }
  if(handlingTotal){ handlingTotal.dataset.inr = 0; }
+ if(shippingCharge){ delete shippingCharge.dataset.inr; }
  document.getElementById('metalTable').innerHTML = '<tr><th>Metal</th><th>Purity</th><th>Description</th><th>Wt</th><th>Rate After GST</th><th>Total</th><th>X</th></tr>';
  document.getElementById('stoneTable').innerHTML = '<tr><th>Type</th><th>Cert</th><th>Description</th><th>Ct</th><th>Rate</th><th>Total</th><th>X</th></tr>';
  updateBaseRates();
@@ -616,29 +994,429 @@ function resetAll(){
  refreshCurrencyInputs();
 }
 
+function handleNewQuoteParam(){
+ const params = new URLSearchParams(window.location.search);
+ if(params.get('new') === '1'){
+  resetAll();
+  window.history.replaceState({}, document.title, window.location.pathname);
+ }
+}
+
+function buildQuotePayload({ id, createdAt, totalInr }){
+ return {
+  id,
+  createdAt,
+  updatedAt: new Date().toISOString(),
+  customerName: (customerName.value || '').trim(),
+  quoteRef: (quoteRef.value || '').trim(),
+  usdRate: +usdRate.value || 0,
+  showUsd: !!showUsd,
+  baseRates: {
+   gold: getCurrencyInputInr(gold24),
+   silver: getCurrencyInputInr(silverRate),
+   platinum: getCurrencyInputInr(platinumRate),
+   gst: +gstRate.value || 0
+  },
+  metals: Array.from(document.querySelectorAll('#metalTable tr'))
+   .slice(1)
+   .map(row => {
+    const cells = row.querySelectorAll('td');
+    return {
+     metal: cells[0]?.innerText || '',
+     purity: cells[1]?.innerText || '',
+     desc: cells[2]?.innerText || '',
+     weight: parseFloat(cells[3]?.innerText) || 0,
+     rateInr: parseFloat(cells[4]?.dataset.rate) || 0,
+     totalInr: parseFloat(cells[5]?.dataset.value) || 0
+    };
+   }),
+  stones: Array.from(document.querySelectorAll('#stoneTable tr'))
+   .slice(1)
+   .map(row => {
+    const cells = row.querySelectorAll('td');
+    return {
+     type: cells[0]?.innerText || '',
+     cert: cells[1]?.innerText || '',
+     desc: cells[2]?.innerText || '',
+     carat: parseFloat(cells[3]?.innerText) || 0,
+     rateInr: parseFloat(cells[4]?.dataset.rate) || 0,
+     totalInr: parseFloat(cells[5]?.dataset.value) || 0
+    };
+   }),
+  making: {
+   ratePerGram: getCurrencyInputInr(makingRatePerGram),
+   weight: +makingWeight.value || 0,
+   extraCharge: getCurrencyInputInr(makingCharge)
+  },
+  handling: {
+   enabled: !!document.getElementById('handlingToggle')?.checked,
+   ratePerCarat: getCurrencyInputInr(handlingRate)
+  },
+  shippingCharge: getCurrencyInputInr(shippingCharge),
+  totalInr
+ };
+}
+
+function applyQuoteData(data){
+ if(!data){ return; }
+ resetAll();
+
+ usdRate.value = data.usdRate || 83;
+ showUsd = !!data.showUsd;
+ if(currencyToggle){
+  currencyToggle.checked = showUsd;
+ }
+ updateCurrencyLabels();
+
+ customerName.value = data.customerName || '';
+ quoteRef.value = data.quoteRef || '';
+
+ const base = data.baseRates || {};
+ setCurrencyInputDisplay(gold24, base.gold || 0);
+ setCurrencyInputDisplay(silverRate, base.silver || 0);
+ setCurrencyInputDisplay(platinumRate, base.platinum || 0);
+ gstRate.value = base.gst ?? 3;
+ updateBaseRates();
+
+ const making = data.making || {};
+ setCurrencyInputDisplay(makingRatePerGram, making.ratePerGram || 0);
+ makingWeight.value = making.weight || '';
+ calculateMakingTotal();
+ setCurrencyInputDisplay(makingCharge, making.extraCharge || 0);
+
+ const handling = data.handling || {};
+ const toggle = document.getElementById('handlingToggle');
+ if(toggle){
+  toggle.checked = handling.enabled !== false;
+ }
+ setCurrencyInputDisplay(handlingRate, handling.ratePerCarat || 0);
+
+ setCurrencyInputDisplay(shippingCharge, data.shippingCharge || 0);
+
+ const metalRows = Array.isArray(data.metals) ? data.metals : [];
+ const stoneRows = Array.isArray(data.stones) ? data.stones : [];
+
+ document.getElementById('metalTable').innerHTML = '<tr><th>Metal</th><th>Purity</th><th>Description</th><th>Wt</th><th>Rate After GST</th><th>Total</th><th>X</th></tr>';
+ metalRows.forEach(item => {
+  const rate = item.rateInr || 0;
+  const total = item.totalInr || 0;
+  metalTable.innerHTML += `<tr>
+   <td>${item.metal || ''}</td>
+   <td>${item.purity || ''}</td>
+   <td>${item.desc || ''}</td>
+   <td>${item.weight || 0}</td>
+   <td class='price-rate' data-rate='${rate}'>${formatCurrency(rate)}</td>
+   <td class='mt price-total' data-value='${total}'>${formatCurrency(total)}</td>
+   <td class='remove' onclick="this.parentElement.remove();calculateTotal()">✖</td>
+  </tr>`;
+ });
+
+ document.getElementById('stoneTable').innerHTML = '<tr><th>Type</th><th>Cert</th><th>Description</th><th>Ct</th><th>Rate</th><th>Total</th><th>X</th></tr>';
+ stoneRows.forEach(item => {
+  const rate = item.rateInr || 0;
+  const total = item.totalInr || 0;
+  stoneTable.innerHTML += `<tr>
+   <td>${item.type || ''}</td>
+   <td>${item.cert || ''}</td>
+   <td>${item.desc || ''}</td>
+   <td class='stoneCt'>${item.carat || 0}</td>
+   <td class='price-rate' data-rate='${rate}'>${formatCurrency(rate)}</td>
+   <td class='st price-total' data-value='${total}'>${formatCurrency(total)}</td>
+   <td class='remove' onclick="this.parentElement.remove();calculateHandling();calculateTotal()">✖</td>
+  </tr>`;
+ });
+
+ calculateHandling();
+ calculateTotal();
+ refreshCurrencyInputs();
+ refreshCurrencyDisplays();
+}
+
+function handleQuoteLoadParam(){
+ const params = new URLSearchParams(window.location.search);
+ const quoteId = params.get('quoteId') || params.get('edit');
+ if(!quoteId){ return; }
+ const saved = getSavedQuotes().find(item => item.id === quoteId);
+ if(saved){
+  applyQuoteData(saved);
+ }
+}
+
 function downloadQuote(){
  const { jsPDF } = window.jspdf;
- const doc = new jsPDF();
- const yStart = 15;
- let y = yStart;
- doc.setFont('helvetica','bold');
- doc.setFontSize(16);
- doc.text('Excellent Jewels - Quote Summary', 14, y);
- y += 8;
- doc.setFont('helvetica','normal');
+ const doc = new jsPDF({ unit:'pt', format:'a4', orientation:'landscape' });
+ const pageWidth = doc.internal.pageSize.getWidth();
+ const pageHeight = doc.internal.pageSize.getHeight();
+ const margin = 36;
+ const black = [18, 18, 18];
+ const softGray = [230, 230, 230];
+ const softGrayDark = [200, 200, 200];
+ const dark = [22, 22, 22];
+ const muted = [90, 90, 90];
+ const accent = [0, 0, 0];
+ const titleFont = 'times';
+ const bodyFont = 'times';
+
+ const wrapText = (text, width) => doc.splitTextToSize(text, width);
+ const addSectionTitle = (label, x, y) => {
+  doc.setFont(titleFont,'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...dark);
+  doc.text(label, x, y);
+  return y + 12;
+ };
+ const addParagraph = (text, x, y, width, lineHeight) => {
+  doc.setFont(bodyFont,'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...muted);
+  const lines = wrapText(text, width);
+  lines.forEach(line => {
+   doc.text(line, x, y);
+   y += lineHeight;
+  });
+  return y;
+ };
+
+ const items = [];
+ document.querySelectorAll('#metalTable tr').forEach((row, idx) => {
+  if(idx === 0){ return; }
+  const cells = row.querySelectorAll('td');
+  if(cells.length < 6){ return; }
+  const metal = cells[0].innerText;
+  const purityVal = cells[1].innerText;
+  const desc = cells[2].innerText || 'Metal';
+  const total = cells[5].dataset.value ? formatCurrencyText(+cells[5].dataset.value) : cells[5].innerText;
+  items.push({
+   desc: `${metal} ${purityVal} ${desc} (Wt ${cells[3].innerText})`,
+   qty: '1',
+   total
+  });
+ });
+ document.querySelectorAll('#stoneTable tr').forEach((row, idx) => {
+  if(idx === 0){ return; }
+  const cells = row.querySelectorAll('td');
+  if(cells.length < 6){ return; }
+  const type = cells[0].innerText;
+  const certVal = cells[1].innerText;
+  const desc = cells[2].innerText || 'Stone';
+  const total = cells[5].dataset.value ? formatCurrencyText(+cells[5].dataset.value) : cells[5].innerText;
+  items.push({
+   desc: `${type} ${certVal} ${desc} (Ct ${cells[3].innerText})`,
+   qty: '1',
+   total
+  });
+ });
+
+ const makingValue = getInrValue(makingTotal) + getCurrencyInputInr(makingCharge);
+ if(makingValue > 0){
+  items.push({
+   desc: 'Making Charges',
+   qty: '1',
+   total: formatCurrencyText(makingValue)
+  });
+ }
+ const handlingValue = getInrValue(handlingTotal);
+ if(handlingValue > 0){
+  items.push({
+   desc: 'Handling Charges',
+   qty: '1',
+   total: formatCurrencyText(handlingValue)
+  });
+ }
+
+ const subtotal = calculateGrandTotal() - getCurrencyInputInr(shippingCharge);
+ const shippingValue = getCurrencyInputInr(shippingCharge);
+
+ doc.setFillColor(255, 255, 255);
+ doc.rect(0, 0, pageWidth, pageHeight, 'F');
+ doc.setFillColor(...black);
+ doc.rect(0, 0, pageWidth, 86, 'F');
+
+ const logo = document.getElementById('pdfLogo');
+ let titleX = margin;
+ if(logo && logo.complete && logo.naturalWidth){
+  const logoHeight = 42;
+  const logoWidth = Math.min(140, Math.round(logoHeight * (logo.naturalWidth / logo.naturalHeight)));
+  doc.addImage(logo, 'PNG', margin, 20, logoWidth, logoHeight);
+  titleX = margin + logoWidth + 12;
+ }
+
+ doc.setFont(titleFont,'bold');
+ doc.setFontSize(13);
+ doc.setTextColor(255,255,255);
+ doc.text('EXCELLENT JEWELS', titleX, 36);
+ doc.setFontSize(9);
+ doc.text('PRIVATE LIMITED', titleX, 52);
+
+ doc.setFont(titleFont,'bold');
+ doc.setFontSize(20);
+ doc.setTextColor(255,255,255);
+ doc.text('INVOICE', pageWidth - margin - doc.getTextWidth('INVOICE'), 52);
+
+ const dateText = `Date : ${new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' })}`;
+ const quoteText = `Invoice No : ${quoteRef.value || '-'}`;
+ const customerText = `To : ${customerName.value || '-'}`;
+ doc.setFillColor(255, 255, 255);
+ doc.rect(margin, 110, pageWidth - margin * 2, 64, 'F');
+ doc.setDrawColor(...softGray);
+ doc.rect(margin, 110, pageWidth - margin * 2, 64);
+ doc.setTextColor(...dark);
+ doc.setFont(bodyFont,'normal');
+ doc.setFontSize(9);
+ doc.text(customerText, margin + 12, 136);
+ doc.text(dateText, pageWidth - margin - doc.getTextWidth(dateText) - 12, 136);
+ doc.setFont(titleFont,'bold');
+ doc.text(quoteText, pageWidth - margin - doc.getTextWidth(quoteText) - 12, 154);
+ doc.setFont(bodyFont,'normal');
+
+ const tableTop = 192;
+ const tableWidth = pageWidth - margin * 2;
+ const colWidths = [tableWidth - 180, 60, 120];
+ const colX = [margin, margin + colWidths[0], margin + colWidths[0] + colWidths[1]];
+ doc.setFillColor(...black);
+ doc.rect(margin, tableTop, pageWidth - margin * 2, 22, 'F');
+ doc.setTextColor(255,255,255);
+ doc.setFont(titleFont,'bold');
+ doc.setFontSize(9);
+ doc.text('DESCRIPTION', colX[0] + 6, tableTop + 14);
+ doc.text('QTY', colX[1] + 8, tableTop + 14);
+ doc.text('TOTAL', colX[2] + 8, tableTop + 14);
+ doc.setTextColor(...dark);
+ doc.setFont(bodyFont,'normal');
+
+ let rowY = tableTop + 22;
+ const rowHeight = 22;
+ items.forEach((item, index) => {
+  if(rowY + rowHeight > pageHeight - 210){
+   doc.addPage();
+   rowY = margin;
+  }
+  doc.setDrawColor(...softGrayDark);
+  doc.setFillColor(255, 255, 255);
+  doc.rect(margin, rowY, pageWidth - margin * 2, rowHeight, 'FD');
+  doc.setTextColor(...dark);
+  doc.setFontSize(9);
+  const descLines = wrapText(item.desc, colWidths[0] - 10);
+  doc.text(descLines[0] || '-', colX[0] + 6, rowY + 14);
+  doc.text(String(item.qty || '-'), colX[1] + 8, rowY + 14);
+  doc.text(item.total || '-', colX[2] + 6, rowY + 14);
+  rowY += rowHeight;
+  if(descLines.length > 1){
+   descLines.slice(1).forEach(line => {
+    if(rowY + rowHeight > pageHeight - 210){
+     doc.addPage();
+     rowY = margin;
+    }
+    doc.setDrawColor(...softGrayDark);
+    doc.setFillColor(255, 255, 255);
+    doc.rect(margin, rowY, pageWidth - margin * 2, rowHeight, 'FD');
+    doc.text(line, colX[0] + 6, rowY + 14);
+    rowY += rowHeight;
+   });
+  }
+ });
+
+ rowY += 10;
+ const summaryX = pageWidth - margin - 210;
+ doc.setFillColor(255, 255, 255);
+ doc.setDrawColor(...softGrayDark);
+ doc.rect(summaryX - 10, rowY - 6, 220, 76);
+ doc.setFont(titleFont,'bold');
+ doc.setTextColor(...dark);
+ doc.text(`Sub Total : ${formatCurrencyText(subtotal)}`, summaryX, rowY + 12);
+ doc.text(`Shipping Charges : ${formatCurrencyText(shippingValue)}`, summaryX, rowY + 32);
+ doc.setFillColor(...black);
+ doc.rect(summaryX - 10, rowY + 42, 220, 22, 'F');
+ doc.setTextColor(255,255,255);
+ doc.text(`GRAND TOTAL : ${formatCurrencyText(calculateGrandTotal())}`, summaryX, rowY + 58);
+ doc.setTextColor(...dark);
+
+ doc.setFont(titleFont,'bold');
+ doc.setFontSize(9);
+ doc.setTextColor(...accent);
+ doc.text('THANK YOU FOR BUSINESS!', margin, pageHeight - 40);
+ doc.setTextColor(...dark);
+
+ doc.addPage();
+ doc.setFillColor(...black);
+ doc.rect(0, 0, pageWidth, 72, 'F');
+ doc.setTextColor(255,255,255);
+ doc.setFont(titleFont,'bold');
+ doc.setFontSize(14);
+ doc.text('PAYMENT & TERMS', margin, 42);
+ doc.setTextColor(...dark);
+
+ doc.setFillColor(255,255,255);
+ doc.rect(margin, 92, pageWidth - margin * 2, pageHeight - 128, 'F');
+ doc.setDrawColor(...softGray);
+ doc.rect(margin, 92, pageWidth - margin * 2, pageHeight - 128);
+
+ let sectionY = 120;
+ doc.setFont(titleFont,'bold');
  doc.setFontSize(10);
- const customer = customerName.value ? `Customer: ${customerName.value}` : 'Customer: -';
- const quote = quoteRef.value ? `Quote Ref: ${quoteRef.value}` : 'Quote Ref: -';
- doc.text(customer, 14, y); y += 5;
- doc.text(quote, 14, y); y += 8;
- doc.text(`Metal Total: ${formatCurrencyText(getTableTotal('.mt'))}`, 14, y); y += 5;
- doc.text(`Stone Total: ${formatCurrencyText(getTableTotal('.st'))}`, 14, y); y += 5;
- const making = getInrValue(makingTotal) + (+makingCharge.value||0);
- doc.text(`Making Total: ${formatCurrencyText(making)}`, 14, y); y += 5;
- doc.text(`Handling Total: ${formatCurrencyText(getInrValue(handlingTotal))}`, 14, y); y += 7;
- doc.setFont('helvetica','bold');
- doc.text(`Grand Total: ${formatCurrencyText(calculateGrandTotal())}`, 14, y);
- doc.save('jewellery-quote.pdf');
+ doc.text('Payment Method :', margin + 12, sectionY);
+
+ sectionY += 14;
+ doc.setFont(bodyFont,'normal');
+ doc.setFontSize(9);
+ const paymentText = [
+  'BANK DETAILS:',
+  'ACCOUNT HOLDER NAME: EXCELLENT CORPORATION HK LIMITED',
+  'BANK NAME: HONGKONG AND SHANGHAI BANKING CORPORATION LIMITED',
+  'THE SWIFT CODE: HSBCHKHHXXX',
+  'HSBC ACCOUNT NUMBER: 841-686124-838',
+  'BRANCH CODE: 841',
+  'BANK CODE: 004',
+  "BANK ADDRESS: 1 QUEEN'S ROAD CENTRAL, CENTRAL AND WESTERN DISTRICT"
+ ];
+ paymentText.forEach(line => {
+  doc.text(line, margin + 12, sectionY);
+  sectionY += 12;
+ });
+
+ sectionY += 8;
+ sectionY = addSectionTitle('Note', margin + 12, sectionY);
+ sectionY = addParagraph(
+  'Due to rapid metal price fluctuations, this quotation is valid for 24 hours only. Any increase in metal rates beyond this period will be charged additionally.',
+  margin + 12,
+  sectionY,
+  pageWidth - margin * 2 - 24,
+  12
+ );
+
+ sectionY += 6;
+ sectionY = addSectionTitle('Terms & Conditions', margin + 12, sectionY);
+ const termsText = [
+  'Prices: Quoted in USD, Ex-Works Surat, India.',
+  'Payment Terms: Advance enrollment (payment) required.',
+  'Delivery Time: Approx 4-7 business days for diamond production and 1-2 weeks for complete jewelry manufacturing. Timelines may vary depending on customization, design, and delivery location.',
+  'Availability: Subject to stock at the time of order confirmation.',
+  'Customization: Length, diamond quality, and design can be customized on request.',
+  'Shipping: Shipment from Hong Kong; shipping & insurance charges additional, usually USD 75-125.',
+  'Pricing Errors: Any pricing or typographical error may be revised or order cancelled.',
+  'Price Changes: Prices are subject to change without notice due to market fluctuations.',
+  'Validity: This quotation and order pricing are valid for 24 hours only from the date of issue. Due to rapid fluctuations in precious metal and diamond prices, any price difference after the validity period will be chargeable to the buyer.',
+  'Cancellation & Refund: Orders can be cancelled before production or dispatch. Once shipped or processed, cancellations are not accepted. Returns or refunds are only applicable for incorrect items or damage during transit, after verification. Customized or made-to-order jewellery is non-returnable. Approved refunds will be processed to the original payment method within a reasonable timeframe.',
+  'Return Policy: Returns accepted within 15 days for manufacturing defects or mismatch; item must be unused, unaltered, and in original packaging; customized/engraved jewelry is non-returnable; buyer informs within 2 days; return shipping, insurance, import duties non-refundable; refunds processed in 2-6 working days after inspection. Engraved and customized items are non-returnable and non-refundable.',
+  'Shipping Policy: Domestic delivery 2-3 business days; international delivery 4-7 business days; buyer responsible for import duties, taxes, and customs; shipping charges non-refundable; buyer provides documents if customs hold good.'
+ ];
+ let currentY = sectionY;
+ termsText.forEach(line => {
+  const lines = wrapText(`- ${line}`, pageWidth - margin * 2 - 24);
+  lines.forEach(textLine => {
+   if(currentY > pageHeight - 60){
+    doc.addPage();
+    currentY = margin;
+   }
+   doc.setFont(bodyFont,'normal');
+   doc.setFontSize(9);
+   doc.setTextColor(...muted);
+   doc.text(textLine, margin + 12, currentY);
+   currentY += 12;
+  });
+ });
+
+ doc.save('jewellery-invoice.pdf');
 }
 
 function getTableTotal(selector){
@@ -653,7 +1431,8 @@ function calculateGrandTotal(){
  let making1 = getInrValue(makingTotal);
  let making2 = +makingCharge.value||0;
  let handling = getInrValue(handlingTotal);
- return metal+stone+making1+making2+handling;
+ let shipping = getCurrencyInputInr(shippingCharge);
+ return metal+stone+making1+making2+handling+shipping;
 }
 
 function refreshCurrencyDisplays(){
@@ -686,9 +1465,203 @@ function toggleCurrency(){
  calculateTotal();
 }
 
-currencyInputs.push(gold24, silverRate, platinumRate, stoneRate, makingRatePerGram, makingCharge, handlingRate);
+const tourSteps = [
+ {
+  target: '#quoteDetailsSection',
+  title: 'Start with quote details',
+  text: 'Add the customer name and a quote reference so saved quotes are easy to identify.'
+ },
+ {
+  target: '#baseRatesSection',
+  title: 'Enter base rates',
+  text: 'Set gold, silver, and platinum rates and GST. The calculator will apply GST automatically.'
+ },
+ {
+  target: '#metalSection',
+  title: 'Add metal items',
+  text: 'Choose the metal and purity, enter the weight, then add each metal line to the quote.'
+ },
+ {
+  target: '#stoneSection',
+  title: 'Add stones or diamonds',
+  text: 'Capture stone type, certification, carat weight, and rate to build the stone total.'
+ },
+ {
+  target: '#makingSection',
+  title: 'Apply making charges',
+  text: 'Enter the making rate and weight, plus any extra making charge.'
+ },
+ {
+  target: '#handlingSection',
+  title: 'Review handling charges',
+  text: 'Toggle handling on or off and confirm the per-carat rate.'
+ },
+ {
+  target: '#shippingSection',
+  title: 'Add shipping charges',
+  text: 'Include shipping as a manual line item when needed.'
+ },
+ {
+  target: '#totalsSection',
+  title: 'Confirm totals and save',
+  text: 'Review totals, save the quote, or download the PDF.'
+ }
+];
+
+let tourIndex = 0;
+let tourCurrentTarget = null;
+const tourSeenKey = 'quoteTourSeen';
+
+function clearTourHighlight(){
+ if(tourCurrentTarget){
+  tourCurrentTarget.classList.remove('tour-highlight');
+  tourCurrentTarget = null;
+ }
+}
+
+function positionTourPopover(target){
+ if(!target){ return; }
+ const popover = document.getElementById('tourPopover');
+ const padding = 16;
+ const rect = target.getBoundingClientRect();
+ const popRect = popover.getBoundingClientRect();
+ let top = rect.bottom + 12;
+ let left = rect.left + (rect.width / 2) - (popRect.width / 2);
+ if(top + popRect.height > window.innerHeight - padding){
+  top = rect.top - popRect.height - 12;
+ }
+ if(top < padding){
+  top = padding;
+ }
+ left = Math.max(padding, Math.min(left, window.innerWidth - popRect.width - padding));
+ popover.style.top = `${top}px`;
+ popover.style.left = `${left}px`;
+}
+
+function showTourStep(index){
+ const overlay = document.getElementById('tourOverlay');
+ const intro = document.getElementById('tourIntro');
+ const popover = document.getElementById('tourPopover');
+ const title = document.getElementById('tourTitle');
+ const text = document.getElementById('tourText');
+ const stepCount = document.getElementById('tourStepCount');
+ const backButton = document.getElementById('tourBack');
+ const nextButton = document.getElementById('tourNext');
+
+ const step = tourSteps[index];
+ if(!step){ endTour(); return; }
+
+ const target = document.querySelector(step.target);
+ if(!target){
+  showTourStep(index + 1);
+  return;
+ }
+
+ tourIndex = index;
+ clearTourHighlight();
+ tourCurrentTarget = target;
+ target.classList.add('tour-highlight');
+
+ overlay.classList.add('active');
+ overlay.setAttribute('aria-hidden', 'false');
+ intro.hidden = true;
+ popover.hidden = false;
+ popover.style.visibility = 'hidden';
+ document.body.classList.add('tour-active');
+
+ title.textContent = step.title;
+ text.textContent = step.text;
+ stepCount.textContent = `Step ${index + 1} of ${tourSteps.length}`;
+ backButton.disabled = index == 0;
+ nextButton.textContent = index === tourSteps.length - 1 ? 'Finish' : 'Next';
+
+ target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+ requestAnimationFrame(() => {
+  positionTourPopover(target);
+  popover.style.visibility = 'visible';
+ });
+}
+
+function closeTourOverlay(){
+ const overlay = document.getElementById('tourOverlay');
+ const intro = document.getElementById('tourIntro');
+ const popover = document.getElementById('tourPopover');
+ overlay.classList.remove('active');
+ overlay.setAttribute('aria-hidden', 'true');
+ intro.hidden = true;
+ popover.hidden = true;
+ document.body.classList.remove('tour-active');
+ clearTourHighlight();
+}
+
+function endTour(){
+ localStorage.setItem(tourSeenKey, '1');
+ closeTourOverlay();
+}
+
+function openTourIntro(){
+ const overlay = document.getElementById('tourOverlay');
+ const intro = document.getElementById('tourIntro');
+ const popover = document.getElementById('tourPopover');
+ overlay.classList.add('active');
+ overlay.setAttribute('aria-hidden', 'false');
+ intro.hidden = false;
+ popover.hidden = true;
+ document.body.classList.add('tour-active');
+ intro.style.top = '20%';
+ intro.style.left = '50%';
+ intro.style.transform = 'translateX(-50%)';
+}
+
+function initTour(){
+ if(localStorage.getItem(tourSeenKey)){ return; }
+ openTourIntro();
+
+ const start = document.getElementById('tourStart');
+ const skip = document.getElementById('tourSkip');
+ const back = document.getElementById('tourBack');
+ const next = document.getElementById('tourNext');
+ const close = document.getElementById('tourClose');
+
+ start.addEventListener('click', () => {
+  localStorage.setItem(tourSeenKey, '1');
+  showTourStep(0);
+ });
+ skip.addEventListener('click', endTour);
+ close.addEventListener('click', endTour);
+ back.addEventListener('click', () => showTourStep(tourIndex - 1));
+ next.addEventListener('click', () => {
+  if(tourIndex >= tourSteps.length - 1){
+   endTour();
+  } else {
+   showTourStep(tourIndex + 1);
+  }
+ });
+
+ window.addEventListener('resize', () => {
+  if(tourCurrentTarget){
+   positionTourPopover(tourCurrentTarget);
+  }
+ });
+ window.addEventListener('scroll', () => {
+  if(tourCurrentTarget){
+   positionTourPopover(tourCurrentTarget);
+  }
+ }, true);
+ document.addEventListener('keydown', (event) => {
+  if(event.key == 'Escape' && document.getElementById('tourOverlay').classList.contains('active')){
+   endTour();
+  }
+ });
+}
+
+
+currencyInputs.push(gold24, silverRate, platinumRate, stoneRate, makingRatePerGram, makingCharge, handlingRate, shippingCharge);
 updateCurrencyLabels();
 calculateTotal();
+handleNewQuoteParam();
+handleQuoteLoadParam();
+initTour();
 </script>
 </body>
 </html>

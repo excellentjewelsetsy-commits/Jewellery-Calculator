@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Search Quotes | Jewellery Quotation Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --ink:#1f2430;
+ --muted:#6f7482;
+ --gold:#c59a2f;
+ --gold-deep:#9b6f1f;
+ --surface:#ffffff;
+ --surface-soft:#fff9e8;
+ --line:#e6e8ef;
+ --accent:#d86b3f;
+}
+*{box-sizing:border-box}
+body{
+ font-family:'Manrope',sans-serif;
+ background:
+  radial-gradient(1200px 500px at 10% -10%, #fff7da 0%, rgba(255,247,218,0) 70%),
+  radial-gradient(1200px 500px at 100% 0%, #ffe5d3 0%, rgba(255,229,211,0) 60%),
+  #f5f2ec;
+ color:var(--ink);
+ padding:24px;
+}
+.app{
+ max-width:1400px;
+ margin:auto;
+ display:grid;
+ grid-template-columns:240px 1fr;
+ gap:22px;
+ align-items:start;
+}
+.sidebar{
+ position:sticky;
+ top:24px;
+}
+.sidebar-card{
+ background:#fff;
+ border:1px solid rgba(197,154,47,0.25);
+ border-radius:20px;
+ padding:16px;
+ box-shadow:0 18px 40px rgba(31,36,48,0.12);
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+}
+.sidebar-card h2{
+ margin:0;
+ font-family:'Playfair Display',serif;
+ font-size:18px;
+ color:var(--gold-deep);
+ letter-spacing:0.4px;
+}
+.sidebar-item{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ width:100%;
+ border-radius:14px;
+ border:1px solid var(--line);
+ background:#fff;
+ color:var(--ink);
+ padding:12px 14px;
+ font-weight:600;
+ text-align:left;
+ box-shadow:0 10px 18px rgba(31,36,48,0.08);
+ text-decoration:none;
+}
+.sidebar-item:hover{
+ border-color:rgba(197,154,47,0.6);
+ box-shadow:0 14px 22px rgba(197,154,47,0.18);
+}
+.sidebar-item.active{
+ border-color:rgba(197,154,47,0.7);
+ background:rgba(255,249,232,0.9);
+ box-shadow:0 14px 22px rgba(197,154,47,0.2);
+}
+.container{
+ max-width:1180px;
+ margin:auto;
+ background:var(--surface);
+ border-radius:28px;
+ padding:28px;
+ box-shadow:0 24px 80px rgba(22,22,40,0.12);
+ border:1px solid rgba(197,154,47,0.2);
+}
+.header{
+ display:flex;
+ flex-wrap:wrap;
+ align-items:center;
+ justify-content:space-between;
+ gap:16px;
+ padding:10px 4px 22px;
+ border-bottom:1px dashed var(--line);
+}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.title-wrap h1{
+ font-family:'Playfair Display',serif;
+ font-size:32px;
+ margin:0;
+ color:var(--gold-deep);
+ letter-spacing:0.5px;
+}
+.title-wrap p{
+ margin:6px 0 0;
+ color:var(--muted);
+ font-size:14px;
+}
+input{
+ width:100%;
+ padding:10px 12px;
+ border-radius:12px;
+ border:1px solid var(--line);
+ margin-top:6px;
+ font-family:'Manrope',sans-serif;
+}
+input:focus{outline:2px solid rgba(197,154,47,0.3);border-color:var(--gold)}
+button{
+ padding:10px 20px;
+ border:none;
+ border-radius:999px;
+ background:var(--gold);
+ color:#fff;
+ font-weight:600;
+ cursor:pointer;
+ transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+button.secondary{
+ background:#fff;
+ color:var(--ink);
+ border:1px solid var(--line);
+}
+button:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(197,154,47,0.2)}
+.section{
+ margin-top:22px;
+ padding:18px;
+ border-radius:20px;
+ background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+ border:1px solid var(--line);
+}
+h3{
+ margin:0 0 12px;
+ font-size:18px;
+ color:var(--gold-deep);
+ display:flex;
+ align-items:center;
+ gap:8px;
+}
+.note{color:var(--muted);font-size:13px;margin-top:6px}
+.saved-list{
+ display:grid;
+ gap:12px;
+}
+.saved-card{
+ background:#fff;
+ border:1px solid var(--line);
+ border-radius:14px;
+ padding:12px 14px;
+ box-shadow:0 10px 18px rgba(31,36,48,0.06);
+ display:flex;
+ flex-wrap:wrap;
+ gap:6px 12px;
+ align-items:center;
+ justify-content:space-between;
+}
+.saved-card small{
+ color:var(--muted);
+ font-size:12px;
+}
+.saved-title{
+ font-weight:700;
+ color:var(--ink);
+}
+.saved-meta{
+ color:var(--muted);
+ font-size:12px;
+}
+.saved-actions-inline{
+ display:flex;
+ gap:8px;
+}
+.saved-actions-inline button{
+ padding:6px 12px;
+ font-size:12px;
+ border-radius:999px;
+}
+@media (max-width:1100px){
+ .app{grid-template-columns:1fr}
+ .sidebar{position:static}
+ .container{max-width:100%}
+}
+</style>
+</head>
+<body>
+<div class="app">
+ <aside class="sidebar">
+  <div class="sidebar-card">
+   <h2>Quote Tools</h2>
+   <a class="sidebar-item" href="index.html?new=1">➕ New Quote</a>
+   <a class="sidebar-item" href="saved-quotes.html">📄 Saved Quotes</a>
+   <a class="sidebar-item active" href="search-quotes.html">🔍 Search Quote</a>
+  </div>
+ </aside>
+ <main class="container">
+  <div class="header">
+   <div class="title-wrap">
+    <h1>Search Quotes</h1>
+    <p>Search by customer name or quote reference.</p>
+   </div>
+   <div class="actions">
+    <button class="secondary" onclick="location.href='index.html'">Open Calculator</button>
+   </div>
+  </div>
+
+  <div class="section">
+   <h3>Search Quote</h3>
+   <input id="quoteSearch" placeholder="Search by customer name or quote reference" oninput="renderSavedQuotes()">
+   <div id="searchResults" class="saved-list"></div>
+  </div>
+ </main>
+</div>
+
+<script>
+function getSavedQuotes(){
+ try{
+  return JSON.parse(localStorage.getItem('savedQuotes') || '[]');
+ }catch(err){
+  return [];
+ }
+}
+
+function removeSavedQuote(id){
+ const quotes = getSavedQuotes().filter(item => item.id !== id);
+ localStorage.setItem('savedQuotes', JSON.stringify(quotes));
+ renderSavedQuotes();
+}
+
+function renderSavedQuotes(){
+ const quotes = getSavedQuotes();
+ const searchList = document.getElementById('searchResults');
+ const query = (document.getElementById('quoteSearch')?.value || '').trim().toLowerCase();
+
+ const createCard = (item) => {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'saved-card';
+  const title = document.createElement('div');
+  title.innerHTML = `<div class="saved-title">${item.customerName || 'Unnamed Client'}</div>
+   <div class="saved-meta">${item.quoteRef ? `Ref: ${item.quoteRef}` : 'No reference'}</div>`;
+  const total = document.createElement('div');
+  const totalValue = new Intl.NumberFormat('en-IN', {style:'currency',currency:'INR',maximumFractionDigits:2}).format(item.totalInr || 0);
+  total.innerHTML = `<div class="saved-title">${totalValue}</div>
+   <small>${new Date(item.createdAt).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })}</small>`;
+  const actions = document.createElement('div');
+  actions.className = 'saved-actions-inline';
+  const editBtn = document.createElement('button');
+  editBtn.className = 'secondary';
+  editBtn.textContent = 'Edit';
+  editBtn.onclick = () => {
+   window.location.href = `index.html?quoteId=${item.id}`;
+  };
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'secondary';
+  removeBtn.textContent = 'Remove';
+  removeBtn.onclick = () => removeSavedQuote(item.id);
+  actions.appendChild(editBtn);
+  actions.appendChild(removeBtn);
+  wrapper.appendChild(title);
+  wrapper.appendChild(total);
+  wrapper.appendChild(actions);
+  return wrapper;
+ };
+
+ if(searchList){
+  searchList.innerHTML = '';
+  const filtered = query
+   ? quotes.filter(item => `${item.customerName} ${item.quoteRef}`.toLowerCase().includes(query))
+   : quotes;
+  filtered.forEach(item => searchList.appendChild(createCard(item)));
+  if(!filtered.length){
+   const empty = document.createElement('p');
+   empty.className = 'note';
+   empty.textContent = query ? 'No matching saved quotes found.' : 'No saved quotes to show.';
+   searchList.appendChild(empty);
+  }
+ }
+}
+
+renderSavedQuotes();
+</script>
+</body>
+</html>
