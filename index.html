@@ -427,7 +427,7 @@ th{color:var(--muted);font-weight:600}
 </style>
 </head>
 <body>
-<img id="pdfLogo" src="assets/logo.png" alt="Excellent Jewels logo" style="display:none">
+<img id="pdfLogo" src="assets/logo.png" alt="Excellent Corporation logo" style="display:none">
 <div class="app">
  <aside class="sidebar">
   <div class="sidebar-card">
@@ -451,7 +451,7 @@ th{color:var(--muted);font-weight:600}
  <main class="container">
 <div class="header">
  <div class="title-wrap">
-  <h1>Excellent Jewels Quotation</h1>
+  <h1>Excellent Corporation HK Limited Quotation</h1>
   <p>Build fast, polished quotes with automatic GST, handling, and USD conversion.</p>
  </div>
  <div class="actions">
@@ -607,6 +607,7 @@ th{color:var(--muted);font-weight:600}
  <div class="total-actions">
   <button class="secondary" id="saveQuoteButton" onclick="saveCurrentQuote()">Save Quote</button>
   <button onclick="downloadQuote()">Download Quote</button>
+  <button class="secondary" onclick="downloadQuoteExcel()">Download Excel</button>
  </div>
 </div>
 
@@ -1244,17 +1245,19 @@ function downloadQuote(){
  doc.setFont(titleFont,'bold');
  doc.setFontSize(13);
  doc.setTextColor(255,255,255);
- doc.text('EXCELLENT JEWELS', titleX, 36);
- doc.setFontSize(9);
- doc.text('PRIVATE LIMITED', titleX, 52);
+ doc.text('EXCELLENT CORPORATION HK LIMITED', titleX, 34);
+ doc.setFont(titleFont,'normal');
+ doc.setFontSize(8);
+ doc.text('ROOM 714, BEVERLEY COMM CENTRE, 87 TO 105 CHATHAM ROAD SOUTH, TST, HONG KONG', titleX, 48);
+ doc.text('CONTACT: +852 - 62634864 | EMAIL: excellentcorporation1@gmail.com', titleX, 60);
 
  doc.setFont(titleFont,'bold');
  doc.setFontSize(20);
  doc.setTextColor(255,255,255);
- doc.text('INVOICE', pageWidth - margin - doc.getTextWidth('INVOICE'), 52);
+ doc.text('QUOTATION', pageWidth - margin - doc.getTextWidth('QUOTATION'), 52);
 
  const dateText = `Date : ${new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' })}`;
- const quoteText = `Invoice No : ${quoteRef.value || '-'}`;
+ const quoteText = `Quotation No : ${quoteRef.value || '-'}`;
  const customerText = `To : ${customerName.value || '-'}`;
  doc.setFillColor(255, 255, 255);
  doc.rect(margin, 110, pageWidth - margin * 2, 64, 'F');
@@ -1360,6 +1363,10 @@ function downloadQuote(){
  doc.setFont(bodyFont,'normal');
  doc.setFontSize(9);
  const paymentText = [
+  'COMPANY NAME: EXCELLENT CORPORATION HK LIMITED',
+  'ADDRESS: ROOM 714, BEVERLEY COMM CENTRE, 87 TO 105 CHATHAM ROAD SOUTH, TST, HONG KONG',
+  'CONTACT: +852 - 62634864',
+  'EMAIL: excellentcorporation1@gmail.com',
   'BANK DETAILS:',
   'ACCOUNT HOLDER NAME: EXCELLENT CORPORATION HK LIMITED',
   'BANK NAME: HONGKONG AND SHANGHAI BANKING CORPORATION LIMITED',
@@ -1416,7 +1423,77 @@ function downloadQuote(){
   });
  });
 
- doc.save('jewellery-invoice.pdf');
+ doc.save('jewellery-quotation.pdf');
+}
+
+function downloadQuoteExcel(){
+ const buildRow = (cells) => cells.map(value => {
+  const safe = value === null || value === undefined ? '' : String(value);
+  if(/["\n,]/.test(safe)){
+   return `"${safe.replace(/"/g, '""')}"`;
+  }
+  return safe;
+ }).join(',');
+
+ const rows = [];
+ rows.push(buildRow(['Quotation']));
+ rows.push(buildRow(['Quote Ref', quoteRef.value || '-']));
+ rows.push(buildRow(['Customer', customerName.value || '-']));
+ rows.push(buildRow(['Date', new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' })]));
+ rows.push('');
+ rows.push(buildRow(['Description', 'Qty', 'Total']));
+
+ const addItemRow = (desc, qty, total) => {
+  rows.push(buildRow([desc, qty, total]));
+ };
+
+ document.querySelectorAll('#metalTable tr').forEach((row, idx) => {
+  if(idx === 0){ return; }
+  const cells = row.querySelectorAll('td');
+  if(cells.length < 6){ return; }
+  const metal = cells[0].innerText;
+  const purityVal = cells[1].innerText;
+  const desc = cells[2].innerText || 'Metal';
+  const total = cells[5].dataset.value ? formatCurrencyText(+cells[5].dataset.value) : cells[5].innerText;
+  addItemRow(`${metal} ${purityVal} ${desc} (Wt ${cells[3].innerText})`, '1', total);
+ });
+ document.querySelectorAll('#stoneTable tr').forEach((row, idx) => {
+  if(idx === 0){ return; }
+  const cells = row.querySelectorAll('td');
+  if(cells.length < 6){ return; }
+  const type = cells[0].innerText;
+  const certVal = cells[1].innerText;
+  const desc = cells[2].innerText || 'Stone';
+  const total = cells[5].dataset.value ? formatCurrencyText(+cells[5].dataset.value) : cells[5].innerText;
+  addItemRow(`${type} ${certVal} ${desc} (Ct ${cells[3].innerText})`, '1', total);
+ });
+
+ const makingValue = getInrValue(makingTotal) + getCurrencyInputInr(makingCharge);
+ if(makingValue > 0){
+  addItemRow('Making Charges', '1', formatCurrencyText(makingValue));
+ }
+ const handlingValue = getInrValue(handlingTotal);
+ if(handlingValue > 0){
+  addItemRow('Handling Charges', '1', formatCurrencyText(handlingValue));
+ }
+
+ rows.push('');
+ const subtotal = calculateGrandTotal() - getCurrencyInputInr(shippingCharge);
+ const shippingValue = getCurrencyInputInr(shippingCharge);
+ rows.push(buildRow(['Sub Total', '', formatCurrencyText(subtotal)]));
+ rows.push(buildRow(['Shipping Charges', '', formatCurrencyText(shippingValue)]));
+ rows.push(buildRow(['Grand Total', '', formatCurrencyText(calculateGrandTotal())]));
+
+ const csv = rows.join('\n');
+ const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+ const link = document.createElement('a');
+ const fileRef = quoteRef.value ? quoteRef.value.trim().replace(/\s+/g, '-').toLowerCase() : 'quotation';
+ link.href = URL.createObjectURL(blob);
+ link.download = `${fileRef}.csv`;
+ document.body.appendChild(link);
+ link.click();
+ document.body.removeChild(link);
+ URL.revokeObjectURL(link.href);
 }
 
 function getTableTotal(selector){
