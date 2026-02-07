@@ -346,6 +346,36 @@ th{color:var(--muted);font-weight:600}
  gap:10px;
  margin-top:12px;
 }
+.draft-banner{
+ display:none;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ padding:12px 16px;
+ border-radius:16px;
+ border:1px solid rgba(197,154,47,0.35);
+ background:rgba(255,249,232,0.9);
+ margin-top:16px;
+ box-shadow:0 10px 18px rgba(31,36,48,0.08);
+}
+.draft-banner.active{
+ display:flex;
+}
+.draft-banner p{
+ margin:0;
+ font-size:13px;
+ color:var(--ink);
+}
+.draft-banner small{
+ display:block;
+ color:var(--muted);
+ margin-top:4px;
+}
+.draft-actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+}
 .tour-overlay{
  position:fixed;
  inset:0;
@@ -465,6 +495,17 @@ th{color:var(--muted);font-weight:600}
   </div>
   <button class="secondary" onclick="window.open('https://www.moneycontrol.com/commodity/','_blank')">Live Gold Rates</button>
   <button class="secondary" onclick="resetAll()">Reset Form</button>
+ </div>
+</div>
+
+<div class="draft-banner" id="draftBanner" role="status" aria-live="polite">
+ <div>
+  <p><strong>Draft recovered.</strong> You have an unfinished quote ready to restore.</p>
+  <small id="draftTimestamp"></small>
+ </div>
+ <div class="draft-actions">
+  <button class="secondary" id="draftDiscard">Discard</button>
+  <button id="draftRestore">Restore draft</button>
  </div>
 </div>
 
@@ -680,6 +721,9 @@ const formatInrText = (value) => `INR ${formatPlain(value)}`;
 let showUsd = false;
 const currencyInputs = [];
 const getUsdRate = () => +usdRate.value || 0;
+const draftKey = 'quoteDraft';
+let draftSaveTimer = null;
+let suppressDraftSave = false;
 const formatUsd = (value) => {
  let rate = getUsdRate();
  if(rate <= 0){ return formatInr(value); }
@@ -925,6 +969,70 @@ function setSavedQuotes(quotes){
  localStorage.setItem('savedQuotes', JSON.stringify(quotes));
 }
 
+function saveDraft(){
+ if(suppressDraftSave){ return; }
+ const totalInr = getCurrentGrandTotalInr();
+ const payload = buildQuotePayload({
+  id: 'draft',
+  createdAt: new Date().toISOString(),
+  totalInr
+ });
+ localStorage.setItem(draftKey, JSON.stringify({
+  savedAt: new Date().toISOString(),
+  payload
+ }));
+}
+
+function scheduleDraftSave(){
+ if(suppressDraftSave){ return; }
+ if(draftSaveTimer){ window.clearTimeout(draftSaveTimer); }
+ draftSaveTimer = window.setTimeout(() => {
+  saveDraft();
+ }, 600);
+}
+
+function clearDraft(){
+ localStorage.removeItem(draftKey);
+ const banner = document.getElementById('draftBanner');
+ if(banner){ banner.classList.remove('active'); }
+}
+
+function formatDraftTimestamp(value){
+ if(!value){ return ''; }
+ const date = new Date(value);
+ if(Number.isNaN(date.getTime())){ return ''; }
+ return `Last saved ${date.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })}`;
+}
+
+function checkForDraft(){
+ const banner = document.getElementById('draftBanner');
+ const timestamp = document.getElementById('draftTimestamp');
+ if(!banner || !timestamp){ return; }
+ try{
+  const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
+  if(draft && draft.payload){
+   banner.classList.add('active');
+   timestamp.textContent = formatDraftTimestamp(draft.savedAt);
+   return;
+  }
+ }catch(err){
+  localStorage.removeItem(draftKey);
+ }
+ banner.classList.remove('active');
+ timestamp.textContent = '';
+}
+
+function restoreDraft(){
+ try{
+  const draft = JSON.parse(localStorage.getItem(draftKey) || 'null');
+  if(draft && draft.payload){
+   applyQuoteData(draft.payload);
+  }
+ }catch(err){
+  localStorage.removeItem(draftKey);
+ }
+}
+
 function getCurrentGrandTotalInr(){
  let metal=0, stone=0;
  document.querySelectorAll('.mt').forEach(e=>metal+=+(e.dataset.value || 0));
@@ -948,10 +1056,11 @@ function saveCurrentQuote(){
   totalInr
  });
  const updated = existing
-  ? quotes.map(item => item.id === entry.id ? entry : item)
-  : [entry, ...quotes];
+ ? quotes.map(item => item.id === entry.id ? entry : item)
+ : [entry, ...quotes];
  setSavedQuotes(updated.slice(0, 50));
  setSaveButtonState(existing ? 'Updated!' : 'Saved!');
+ clearDraft();
 }
 
 function setSaveButtonState(text){
@@ -968,6 +1077,7 @@ function setSaveButtonState(text){
 }
 
 function resetAll(){
+ suppressDraftSave = true;
  document.querySelectorAll('input').forEach(input=>{
   if(input.id === 'gstRate'){ input.value = 3; return; }
   if(input.id === 'usdRate'){ input.value = 83; return; }
@@ -993,6 +1103,7 @@ function resetAll(){
  calculateTotal();
  updateCurrencyLabels();
  refreshCurrencyInputs();
+ suppressDraftSave = false;
 }
 
 function handleNewQuoteParam(){
@@ -1060,6 +1171,7 @@ function buildQuotePayload({ id, createdAt, totalInr }){
 
 function applyQuoteData(data){
  if(!data){ return; }
+ suppressDraftSave = true;
  resetAll();
 
  usdRate.value = data.usdRate || 83;
@@ -1131,6 +1243,7 @@ function applyQuoteData(data){
  calculateTotal();
  refreshCurrencyInputs();
  refreshCurrencyDisplays();
+ suppressDraftSave = false;
 }
 
 function handleQuoteLoadParam(){
@@ -1738,7 +1851,24 @@ updateCurrencyLabels();
 calculateTotal();
 handleNewQuoteParam();
 handleQuoteLoadParam();
+checkForDraft();
 initTour();
+
+document.addEventListener('input', scheduleDraftSave);
+document.addEventListener('change', scheduleDraftSave);
+const draftRestore = document.getElementById('draftRestore');
+const draftDiscard = document.getElementById('draftDiscard');
+if(draftRestore){
+ draftRestore.addEventListener('click', () => {
+  restoreDraft();
+  checkForDraft();
+ });
+}
+if(draftDiscard){
+ draftDiscard.addEventListener('click', () => {
+  clearDraft();
+ });
+}
 </script>
 </body>
 </html>
