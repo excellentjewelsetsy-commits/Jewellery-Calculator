@@ -25,7 +25,7 @@ body{
   radial-gradient(1200px 500px at 100% 0%, #ffe5d3 0%, rgba(255,229,211,0) 60%),
   #f5f2ec;
  color:var(--ink);
- padding:24px;
+ padding:16px;
 }
 .app{
  max-width:1400px;
@@ -191,11 +191,31 @@ button.secondary{
 }
 button:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(197,154,47,0.2)}
 .section{
- margin-top:22px;
- padding:18px;
+ margin-top:16px;
+ padding:16px;
  border-radius:20px;
  background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
  border:1px solid var(--line);
+}
+.calculator-grid{
+ display:grid;
+ gap:16px;
+ grid-template-columns:minmax(0, 1.35fr) minmax(300px, 0.9fr);
+ align-items:start;
+ margin-top:16px;
+}
+.calculator-main .section,
+.calculator-side .section{
+ margin-top:0;
+}
+.calculator-main,
+.calculator-side{
+ display:grid;
+ gap:16px;
+}
+.calculator-side{
+ position:sticky;
+ top:16px;
 }
 h3{
  margin:0 0 12px;
@@ -218,7 +238,7 @@ input:focus,select:focus{outline:2px solid rgba(197,154,47,0.3);border-color:var
 table{width:100%;margin-top:12px;border-collapse:separate;border-spacing:0 8px}
 th,td{
  background:#fff;
- padding:10px;
+ padding:8px;
  text-align:center;
  border-radius:12px;
  box-shadow:0 5px 14px rgba(0,0,0,0.06);
@@ -257,12 +277,29 @@ th{color:var(--muted);font-weight:600}
 .note{color:var(--muted);font-size:13px;margin-top:6px}
 .tag{display:inline-flex;gap:6px;align-items:center;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12px;color:var(--muted)}
 .quote-template{
- margin-top:24px;
+ margin-top:16px;
  background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,249,232,0.65));
  border:1px solid rgba(197,154,47,0.35);
  border-radius:22px;
  padding:22px;
 }
+.quote-template summary{
+ cursor:pointer;
+ list-style:none;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ font-weight:700;
+ color:var(--gold-deep);
+}
+.quote-template summary::-webkit-details-marker{display:none}
+.quote-template summary::after{
+ content:'▾';
+ transition:transform .2s ease;
+ font-size:14px;
+}
+.quote-template[open] summary::after{transform:rotate(180deg)}
 .quote-grid{
  display:grid;
  grid-template-columns:1.2fr 1fr;
@@ -419,6 +456,10 @@ th{color:var(--muted);font-weight:600}
  .header{flex-direction:column;align-items:flex-start}
  .quote-grid{grid-template-columns:1fr}
 }
+@media (max-width:1200px){
+ .calculator-grid{grid-template-columns:1fr}
+ .calculator-side{position:static}
+}
 @media (max-width:1100px){
  .app{grid-template-columns:1fr}
  .sidebar{position:static}
@@ -468,21 +509,23 @@ th{color:var(--muted);font-weight:600}
  </div>
 </div>
 
-<div class="section" id="quoteDetailsSection">
- <h3>Quote Details <span class="tag">Optional</span></h3>
- <div class="grid">
-  <div>
-   <label>Customer Name</label>
-   <input id="customerName" placeholder="Client name">
+<div class="calculator-grid">
+ <div class="calculator-main">
+  <div class="section" id="quoteDetailsSection">
+   <h3>Quote Details <span class="tag">Optional</span></h3>
+   <div class="grid">
+    <div>
+     <label>Customer Name</label>
+     <input id="customerName" placeholder="Client name">
+    </div>
+    <div>
+     <label>Quote Ref</label>
+     <input id="quoteRef" placeholder="EXJ-2026-001">
+    </div>
+   </div>
   </div>
-  <div>
-   <label>Quote Ref</label>
-   <input id="quoteRef" placeholder="EXJ-2026-001">
-  </div>
- </div>
-</div>
 
-<div class="section" id="baseRatesSection">
+  <div class="section" id="baseRatesSection">
  <h3><span data-currency-label data-label-inr="Metal Base Rates (INR / gram)" data-label-usd="Metal Base Rates (USD / gram)">Metal Base Rates (INR / gram)</span></h3>
  <div class="rate-grid">
   <input id="gold24" type="number" min="0" step="0.01" placeholder="Gold 24K Rate (INR/gm)" data-currency-placeholder data-placeholder-inr="Gold 24K Rate (INR/gm)" data-placeholder-usd="Gold 24K Rate (USD/gm)" oninput="updateBaseRates()">
@@ -565,7 +608,9 @@ th{color:var(--muted);font-weight:600}
  </table>
 </div>
 
-<div class="section" id="makingSection">
+ </div>
+ <aside class="calculator-side">
+  <div class="section" id="makingSection">
  <h3>Making Charges</h3>
  <div class="grid">
   <div>
@@ -601,19 +646,21 @@ th{color:var(--muted);font-weight:600}
  <p class="note">Shipping charges will be added to the grand total.</p>
 </div>
 
-<div class="section" id="totalsSection">
- <h3>Totals</h3>
- <div class="total" id="finalResult"></div>
- <div class="total-actions">
-  <button class="secondary" id="saveQuoteButton" onclick="saveCurrentQuote()">Save Quote</button>
-  <button onclick="downloadQuote()">Download Quote</button>
-  <button class="secondary" onclick="downloadQuoteExcel()">Download Excel</button>
- </div>
+  <div class="section" id="totalsSection">
+   <h3>Totals</h3>
+   <div class="total" id="finalResult"></div>
+   <div class="total-actions">
+    <button class="secondary" id="saveQuoteButton" onclick="saveCurrentQuote()">Save Quote</button>
+    <button onclick="downloadQuote()">Download Quote</button>
+    <button class="secondary" onclick="downloadQuoteExcel()">Download Excel</button>
+   </div>
+  </div>
+ </aside>
 </div>
 
-<div class="quote-template">
- <h3>Quotation Notes & Payment Details</h3>
- <div class="quote-grid">
+<details class="quote-template">
+ <summary>Quotation Notes & Payment Details</summary>
+ <div class="quote-grid" style="margin-top:12px">
   <div class="quote-block">
    <h4>Payment details</h4>
    <p><strong>Bank Details:</strong></p>
@@ -644,7 +691,7 @@ th{color:var(--muted);font-weight:600}
    </ul>
   </div>
  </div>
-</div>
+</details>
 </main>
 </div>
 
